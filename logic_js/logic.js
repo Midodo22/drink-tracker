@@ -72,7 +72,7 @@ $(document).ready(function() {
             
             if (category !== 'none' && category !== '') {
                 $.ajax({
-                    url: 'todo.php',
+                    url: '../logic_php/todo.php',
                     type: 'POST',
                     data: {
                         action: 'add_category',
@@ -95,7 +95,7 @@ $(document).ready(function() {
         if (category === '') category = 'none';
 
         $.ajax({
-            url: 'todo.php',
+            url: '../logic_php/todo.php',
             type: 'POST',
             data: {
                 action: 'add',
@@ -133,7 +133,7 @@ $(document).ready(function() {
         const taskName = todoCard.data('task-name');
         
         $.ajax({
-            url: 'todo.php',
+            url: '../logic_php/todo.php',
             type: 'POST',
             data: {
                 action: 'toggle_complete',
@@ -158,7 +158,7 @@ $(document).ready(function() {
             const taskName = todoCard.data('task-name');
             
             $.ajax({
-                url: 'todo.php',
+                url: '../logic_php/todo.php',
                 type: 'POST',
                 data: {
                     action: 'delete',
@@ -195,7 +195,7 @@ $(document).ready(function() {
         if (newName === null || newName.trim() === '') return;
         
         $.ajax({
-            url: 'todo.php',
+            url: '../logic_php/todo.php',
             type: 'POST',
             data: { action: 'get_categories' },
             dataType: 'json',
@@ -212,7 +212,7 @@ $(document).ready(function() {
                     
                     if (categoryToUse !== 'none' && !response.categories.includes(categoryToUse)) {
                         $.ajax({
-                            url: 'todo.php',
+                            url: '../logic_php/todo.php',
                             type: 'POST',
                             data: {
                                 action: 'add_category',
@@ -241,7 +241,7 @@ $(document).ready(function() {
 
     function updateTask(oldName, newName, newCategory) {
         $.ajax({
-            url: 'todo.php',
+            url: '../logic_php/todo.php',
             type: 'POST',
             data: {
                 action: 'update_task',
@@ -282,7 +282,7 @@ $(document).ready(function() {
         }
         
         $.ajax({
-            url: 'todo.php',
+            url: '../logic_php/todo.php',
             type: 'POST',
             data: {
                 action: 'update_category',
@@ -318,7 +318,7 @@ $(document).ready(function() {
         
         if (confirm(`Are you sure you want to delete category "${categoryName}" and all its tasks?`)) {
             $.ajax({
-                url: 'todo.php',
+                url: '../logic_php/todo.php',
                 type: 'POST',
                 data: {
                     action: 'delete_category',
@@ -348,7 +348,7 @@ $(document).ready(function() {
 function loadTodos() {
     console.log('Loading tasks...');
     $.ajax({
-        url: 'todo.php',
+        url: '../logic_php/todo.php',
         type: 'POST',
         data: { action: 'get_all' },
         dataType: 'json',
@@ -466,7 +466,7 @@ function createTodoCard(task) {
 function loadCategories() {
     console.log('Loading categories...');
     $.ajax({
-        url: 'todo.php',
+        url: '../logic_php/todo.php',
         type: 'POST',
         data: { action: 'get_categories' },
         dataType: 'json',
