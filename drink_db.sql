@@ -10,14 +10,14 @@ CREATE TABLE `brands` (
 CREATE TABLE `drinks` (
   `brand_id` int(11) NOT NULL,
   `name` varchar(20) NOT NULL,
-  `price` int(11) NOT NULL,
-  `calories` int(11) NOT NULL
+  `price` int(11),
+  `calories` int(11)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `friends` (
   `user_id` int(11) NOT NULL,
   `friend_id` int(11) NOT NULL,
-  `friend_name` varchar(20) NOT NULL
+  `friend_name` varchar(20)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `records` (
@@ -25,26 +25,26 @@ CREATE TABLE `records` (
   `record_id` int(11) NOT NULL,
   `brand_id` int(11) NOT NULL,
   `drink_name` varchar(20) NOT NULL,
-  `toppings` varchar(20) NOT NULL,
-  `temp` varchar(20) NOT NULL,
-  `sugar` int(11) NOT NULL,
-  `calories` int(11) NOT NULL,
-  `price` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `toppings` varchar(20),
+  `temp` varchar(20),
+  `sugar` int(11),
+  `calories` int(11),
+  `price` int(11),
+  `created_at` timestamp DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `toppings` (
   `brand_id` int(11) NOT NULL,
   `name` varchar(20) NOT NULL,
   `price` int(11) NOT NULL,
-  `calories` int(11) NOT NULL
+  `calories` int(11)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(20) NOT NULL,
   `password` varchar(256) NOT NULL,
-  `invite_code` varchar(10) NOT NULL
+  `invite_code` varchar(10)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `brands`
