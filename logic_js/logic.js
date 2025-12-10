@@ -72,7 +72,7 @@ $(document).ready(function() {
             
             if (category !== 'none' && category !== '') {
                 $.ajax({
-                    url: 'todo.php',
+                    url: '../logic_php/todo.php',
                     type: 'POST',
                     data: {
                         action: 'add_category',
@@ -95,7 +95,7 @@ $(document).ready(function() {
         if (category === '') category = 'none';
 
         $.ajax({
-            url: 'todo.php',
+            url: '../logic_php/todo.php',
             type: 'POST',
             data: {
                 action: 'add',
@@ -133,7 +133,7 @@ $(document).ready(function() {
         const taskName = todoCard.data('task-name');
         
         $.ajax({
-            url: 'todo.php',
+            url: '../logic_php/todo.php',
             type: 'POST',
             data: {
                 action: 'toggle_complete',
@@ -158,7 +158,7 @@ $(document).ready(function() {
             const taskName = todoCard.data('task-name');
             
             $.ajax({
-                url: 'todo.php',
+                url: '../logic_php/todo.php',
                 type: 'POST',
                 data: {
                     action: 'delete',
@@ -186,62 +186,55 @@ $(document).ready(function() {
         }
     });
 
-    $(document).on('click', '.edit-btn', function() {
-        const todoCard = $(this).closest('.todo-item-card');
-        const oldName = todoCard.data('task-name');
-        const currentCategory = todoCard.find('.todo-category').text();
-        
-        const newName = prompt('Enter new task name:', oldName);
-        if (newName === null || newName.trim() === '') return;
-        
-        $.ajax({
-            url: 'todo.php',
-            type: 'POST',
-            data: { action: 'get_categories' },
-            dataType: 'json',
-            success: function(response) {
-                if (response.success) {
-                    let categoryOptions = response.categories.map(cat => 
-                        cat === currentCategory ? `${cat} (current)` : cat
-                    ).join('\n');
-                    
-                    const newCategory = prompt('Select category:\n' + categoryOptions + '\n\nOr enter a new category name:', currentCategory);
-                    if (newCategory === null) return;
-                    
-                    const categoryToUse = newCategory.trim() || 'none';
-                    
-                    if (categoryToUse !== 'none' && !response.categories.includes(categoryToUse)) {
-                        $.ajax({
-                            url: 'todo.php',
-                            type: 'POST',
-                            data: {
-                                action: 'add_category',
-                                category: categoryToUse
-                            },
-                            dataType: 'json',
-                            success: function(catResponse) {
-                                console.log('Category add response:', catResponse);
-                                if (catResponse.success) {
-                                    loadCategories();
-                                }
-                                updateTask(oldName, newName.trim(), categoryToUse);
-                            },
-                            error: function(xhr, status, error) {
-                                console.error('Category add error:', error);
-                                updateTask(oldName, newName.trim(), categoryToUse);
-                            }
-                        });
-                    } else {
-                        updateTask(oldName, newName.trim(), categoryToUse);
-                    }
-                }
-            }
-        });
-    });
+    let taskBeingEdited = null;
+
+// OPEN EDIT POPUP
+$(document).on("click", ".edit-btn", function () {
+    const card = $(this).closest(".todo-item-card");
+    const taskName = card.data("task-name");
+
+    taskBeingEdited = window.allTasks.find(t => t.name === taskName);
+
+    if (!taskBeingEdited) return;
+
+    // Fill modal fields
+    $("#edit-name").val(taskBeingEdited.name);
+    $("#edit-category").val(taskBeingEdited.category);
+    $("#edit-description").val(taskBeingEdited.description);
+    $("#edit-deadline").val(taskBeingEdited.deadline);
+
+    // Show popup
+    $("#edit-modal-overlay").removeClass("hidden");
+});
+
+// CANCEL CLOSE
+$("#edit-cancel-btn").on("click", function () {
+    $("#edit-modal-overlay").addClass("hidden");
+});
+
+// SAVE EDITED DATA
+$("#edit-form").on("submit", function (e) {
+    e.preventDefault();
+
+    taskBeingEdited.name = $("#edit-name").val();
+    taskBeingEdited.category = $("#edit-category").val();
+    taskBeingEdited.description = $("#edit-description").val();
+    taskBeingEdited.deadline = $("#edit-deadline").val();
+
+    // Call your existing update function (adjust to your own code)
+    updateTask(taskBeingEdited);
+
+    // Close modal
+    $("#edit-modal-overlay").addClass("hidden");
+
+    // Re-render UI
+    loadTasks();
+});
+
 
     function updateTask(oldName, newName, newCategory) {
         $.ajax({
-            url: 'todo.php',
+            url: '../logic_php/todo.php',
             type: 'POST',
             data: {
                 action: 'update_task',
@@ -282,7 +275,7 @@ $(document).ready(function() {
         }
         
         $.ajax({
-            url: 'todo.php',
+            url: '../logic_php/todo.php',
             type: 'POST',
             data: {
                 action: 'update_category',
@@ -318,7 +311,7 @@ $(document).ready(function() {
         
         if (confirm(`Are you sure you want to delete category "${categoryName}" and all its tasks?`)) {
             $.ajax({
-                url: 'todo.php',
+                url: '../logic_php/todo.php',
                 type: 'POST',
                 data: {
                     action: 'delete_category',
@@ -348,7 +341,7 @@ $(document).ready(function() {
 function loadTodos() {
     console.log('Loading tasks...');
     $.ajax({
-        url: 'todo.php',
+        url: '../logic_php/todo.php',
         type: 'POST',
         data: { action: 'get_all' },
         dataType: 'json',
@@ -434,39 +427,45 @@ function filterTodos(type) {
     }
 }
 
-// Function to create a todo card element
 function createTodoCard(task) {
-    const deadlineText = task.deadline ? 
-        new Date(task.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 
-        'No deadline';
-    
-    const completedClass = task.completed == 1 ? 'completed' : '';
-    const categoryDisplay = task.category && task.category !== 'none' ? escapeHtml(task.category) : 'none';
-    
+    const deadlineText = task.deadline
+        ? new Date(task.deadline).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric"
+          })
+        : "No deadline";
+
     return `
-        <div class="card todo-item-card ${completedClass}" data-task-name="${escapeHtml(task.name)}">
-            <div class="todo-header">
-                <h3 style="font-weight: 700; margin-bottom: 0.3rem;">${escapeHtml(task.name)}</h3>
-                <span class="todo-category" style="background-color: var(--theme_green); color: white; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.85em; font-weight: 600;">${categoryDisplay}</span>
-            </div>
-            <p class="todo-description" style="font-weight: 500;">${escapeHtml(task.description || 'No description')}</p>
-            <div class="todo-footer">
-                <span class="todo-deadline" style="font-weight: 500;"><i class="fa fa-calendar"></i> ${deadlineText}</span>
-                <div class="todo-actions">
-                    <button class="todo-btn edit-btn" title="Edit task"><i class="fa fa-edit"></i></button>
-                    <button class="todo-btn complete-btn" title="Mark as complete"><i class="fa fa-check"></i></button>
-                    <button class="todo-btn delete-btn" title="Delete"><i class="fa fa-trash"></i></button>
+        <div class="todo-item-card ${task.completed == 1 ? "completed" : ""}"
+            data-task-name="${escapeHtml(task.name)}">
+
+            <div class="todo-left">
+                <div class="todo-top-row">
+                    <h3 class="todo-name">${escapeHtml(task.name)}</h3>
+                    <span class="todo-category">${escapeHtml(task.category || "none")}</span>
                 </div>
+
+                <p class="todo-description">${escapeHtml(task.description || "No description")}</p>
+                <span class="todo-deadline"><i class="fa fa-calendar"></i> ${deadlineText}</span>
+            </div>
+
+            <div class="todo-right">
+                <button class="todo-btn edit-btn"><i class="fa fa-edit"></i></button>
+                <button class="todo-btn complete-btn"><i class="fa fa-check"></i></button>
+                <button class="todo-btn delete-btn"><i class="fa fa-trash"></i></button>
             </div>
         </div>
     `;
 }
 
+
+
 // Function to load categories
 function loadCategories() {
     console.log('Loading categories...');
     $.ajax({
-        url: 'todo.php',
+        url: '../logic_php/todo.php',
         type: 'POST',
         data: { action: 'get_categories' },
         dataType: 'json',
