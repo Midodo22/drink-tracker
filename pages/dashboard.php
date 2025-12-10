@@ -110,8 +110,35 @@
             </div>
 
             
-            <div id="todos-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+            <div id="todos-container">
                 <p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">Loading tasks...</p>
+            </div>
+
+        </div>
+
+        <!-- EDIT MODAL OVERLAY -->
+        <div id="edit-modal-overlay" class="modal-overlay hidden">
+            <div id="edit-modal" class="modal-card">
+                <h2>Edit Task</h2>
+
+                <form id="edit-form">
+                    <label>Name:</label>
+                    <input type="text" id="edit-name" class="edit-text-box" required>
+
+                    <label>Category:</label>
+                    <input type="text" id="edit-category" class="edit-text-box">
+
+                    <label>Description:</label>
+                    <textarea id="edit-description" class="edit-text-box" rows="3"></textarea>
+
+                    <label>Deadline:</label>
+                    <input type="date" id="edit-deadline" class="edit-text-box">
+
+                    <div class="modal-buttons">
+                        <button type="button" id="edit-cancel-btn" class="todo-btn">Cancel</button>
+                        <button type="submit" class="todo-btn save-btn">Save</button>
+                    </div>
+                </form>
             </div>
         </div>
 
