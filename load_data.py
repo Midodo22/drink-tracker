@@ -1,62 +1,98 @@
 import mysql.connector as SQLC
 import pandas as pd
 import os
+import numpy as np
 
 def create_db(db_name="drink_tracker"):
     DataBase = SQLC.connect(
-        host="localhost",
-        user="root",
+        host="localhost", # TODO: Replace with your MySQL username
+        user="root", # TODO: Replace with your MySQL password
         password=""
     )
 
     # Create a cursor object
-    Cursor = DataBase.cursor()
+    cursor = DataBase.cursor()
 
     # Execute command to create the database
-    Cursor.execute(f"CREATE DATABASE {db_name};")
+    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name};")
 
     print(f"{db_name} database is created")
+    cursor.close()
+    DataBase.close()
+    
+def run_sql_file(sql_file_path):
+    # Connect to MySQL
+    connection = SQLC.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="drink_tracker"
+    )
+    cursor = connection.cursor()
 
-def create_tables():
+    # Read .sql file
+    with open(sql_file_path, "r", encoding="utf-8") as file:
+        sql_script = file.read()
+
+    # MySQL connector does NOT allow multi-statements by default
+    for statement in sql_script.split(";"):
+        stmt = statement.strip()
+        if stmt:   # skip empty lines
+            try:
+                cursor.execute(stmt)
+            except Exception as e:
+                print(f"Error executing statement: {stmt}\n{e}")
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+    print(f"Executed SQL file: {sql_file_path}")
+
+def load_data():
     # Database connection
-    # connection = mysql.connector.connect(
-    #     host='localhost',         # Replace with your host
-    #     user='root',     # Replace with your MySQL username
-    #     password='', # Replace with your MySQL password
-    #     database='drink_tracker'  # Replace with your database name
-    # )
+    connection = SQLC.connect(
+        host='localhost',
+        user='root', # TODO: Replace with your MySQL username
+        password='', # TODO: Replace with your MySQL password
+        database='drink_tracker'
+    )
 
-    # cursor = connection.cursor()
+    cursor = connection.cursor()
 
     directory = 'data'  # set directory path
 
-    for entry in os.scandir(directory):  
-        if entry.is_file():  # check if it's a file
-            print(f"Loading data from {entry.path}")
+    for entry in os.scandir(directory):
+        if not entry.is_file():
+            continue
 
-        csv_file = entry  # Replace with the path to your CSV file
-        data = pd.read_csv(csv_file)
+        print(f"Loading CSV: {entry.name}")
 
+        # Load CSV into pandas
+        df = pd.read_csv(entry.path)
+        df = df.replace({np.nan: None})
+
+        # Extract table name from filename
         table_name = entry.name.split('.')[0]
-        print(f"Table name: {table_name}")
-        print(f"Data: {data}")
-        # for index, row in data.iterrows():
-        #     # cursor.execute(
-        #     #     "INSERT INTO your_table_name (id, name, email) VALUES (%s, %s, %s)",
-        #     #     (row['id'], row['name'], row['email'])
-        #     # )
-        #     print("INSERT INTO your_table_name (id, name, email) VALUES (%s, %s, %s)",
-        #         (row['id'], row['name'], row['email']))
 
-        # Commit the transaction
-        # connection.commit()
+        # Get column names from first row
+        columns = df.columns.tolist()
+        
+        insert_sql = f"""
+            INSERT INTO `{table_name}` ({", ".join(['`'+c+'`' for c in columns])})
+            VALUES ({", ".join(["%s"] * len(columns))});
+        """
 
-        print("Data imported successfully!")
+        for _, row in df.iterrows():
+            cursor.execute(insert_sql, tuple(row[col] for col in columns))
+
+        connection.commit()
+        print("Data inserted successfully!")
 
     # Close the connection
-    # cursor.close()
-    # connection.close()
+    cursor.close()
+    connection.close()
 
 if __name__ == "__main__":
     create_db()
-    create_tables()
+    run_sql_file("drink_db.sql")
+    load_data()
