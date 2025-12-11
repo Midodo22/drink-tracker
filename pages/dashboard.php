@@ -3,7 +3,7 @@
 
     // Check if the user is logged in, if
     // not then redirect them to the index page
-    if (!isset($_SESSION['username'])) {
+    if (!isset($_SESSION['user_id'])) {
         header("Location: index.php");
         exit();
     }
@@ -39,21 +39,21 @@
             
             <form id="record-form" method="post">
                 <div style="margin-bottom: 1rem;">
-                    <label for="record-brand" style="font-weight: 600;"><i class="fa fa-pencil"></i> Brand</label>
+                    <label for="create-brand" style="font-weight: 600;"><i class="fa fa-pencil"></i> Brand</label>
                     <br>
                     <select id="create-brand" class="text-box" style="max-width: 250px; display: inline-block;">
                     </select>
                 </div>
 
                 <div style="margin-bottom: 1rem;">
-                    <label for="record-drink" style="font-weight: 600;"><i class="fa fa-align-left"></i> Drink name</label>
+                    <label for="create-drink" style="font-weight: 600;"><i class="fa fa-align-left"></i> Drink name</label>
                     <br>
                     <select id="create-drink" class="text-box" style="max-width: 250px; display: inline-block;">
                     </select>
                 </div>
 
                 <div style="margin-bottom: 1rem;">
-                    <label for="record-topping" style="font-weight: 600;"><i class="fa fa-align-left"></i> Toppings</label>
+                    <label for="create-topping" style="font-weight: 600;"><i class="fa fa-align-left"></i> Toppings</label>
                     <br>
                     <select id="create-topping" class="text-box" style="max-width: 250px; display: inline-block;">
                     </select>
@@ -61,7 +61,7 @@
 
                 <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                     <div style="flex: 1;">
-                        <label for="record-temperature" style="font-weight: 600;"><i class="fa fa-tag"></i> Temperature</label>
+                        <label for="create-temp" style="font-weight: 600;"><i class="fa fa-tag"></i> Temperature</label>
                         <div style="display: flex; gap: 0.5rem;">
                             <select id="create-temp" class="text-box" style="max-width: 250px; display: inline-block;">
                                 <option value="normal">正常</option>
@@ -76,7 +76,7 @@
                     </div>
 
                     <div style="flex: 1;">
-                        <label for="record-sugar" style="font-weight: 600;"><i class="fa fa-calendar"></i> Sugar</label>
+                        <label for="create-sugar" style="font-weight: 600;"><i class="fa fa-calendar"></i> Sugar</label>
                         <select id="create-sugar" class="text-box" style="max-width: 250px; display: inline-block;">
                         <option value="10">10</option>
                         <option value="9">9</option>
@@ -113,14 +113,14 @@
             
             <!-- Filter -->
             <div style="text-align: center; margin-bottom: 1.5rem;">
-                <label for="filter-type" style="margin-right: 0.5rem; font-weight: 600;">Filter by brand:
+                <label for="brand-filter" style="margin-right: 0.5rem; font-weight: 600;">Filter by brand:
                 </label>
 
                 <select id="brand-filter" class="text-box" style="max-width: 250px; display: inline-block;">
                 </select>
             </div>
 
-            <div id="records-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+            <div id="records-container">
                 <p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">Loading tasks...</p>
             </div>
         </div>

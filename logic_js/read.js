@@ -20,7 +20,6 @@ $(document).ready(function() {
     // });
 
     // init filter
-    document.getElementById("complete-filter").style.display = "none";
 
     document.getElementById("brand-filter").addEventListener("change", function () {
         filterRecords("brand");
@@ -29,27 +28,47 @@ $(document).ready(function() {
 });
 
 
-function createRecordCard(task) {
-    const deadlineText = task.deadline
-        ? new Date(task.deadline).toLocaleDateString("en-US", {
+function createRecordCard(record) {
+    const createdTimeText = record.created_at
+        ? new Date(record.created_at).toLocaleDateString("en-US", {
               year: "numeric",
               month: "short",
               day: "numeric"
           })
-        : "No deadline";
+        : "No data";
 
     return `
-        <div class="record-item-card ${task.completed == 1 ? "completed" : ""}"
-            data-task-name="${escapeHtml(task.name)}">
+        <div class="record-item-card"
+            data-record-id="${record.record_id}"
+            data-user-id="${record.user_id}"
+            data-brand-id="${record.brand_id}">
 
             <div class="record-left">
+
+                <!-- Top Row: Drink + Brand -->
                 <div class="record-top-row">
-                    <h3 class="record-name">${escapeHtml(task.name)}</h3>
-                    <span class="record-category">${escapeHtml(task.category || "none")}</span>
+                    <h3 class="record-drink">${escapeHtml(record.drink_name)}</h3>
+                    <span class="record-brand">${escapeHtml(record.brand_name || "Unknown")}</span>
+
+                    <!-- Toppings -->
+                    <p class="record-topping">
+                        <strong>Toppings:</strong> ${escapeHtml(record.toppings || "None")}
+                    </p>
                 </div>
 
-                <p class="record-description">${escapeHtml(task.description || "No description")}</p>
-                <span class="record-deadline"><i class="fa fa-calendar"></i> ${deadlineText}</span>
+                <!-- Temperature & Sugar -->
+                <p class="record-topping">
+                    <strong>Temp:</strong> ${escapeHtml(record.temp || "-")} &nbsp; | &nbsp;
+                    <strong>Sugar:</strong> ${escapeHtml(record.sugar != null ? record.sugar : "-")} grams &nbsp; | &nbsp;
+                    
+                    <strong>Calories:</strong> ${escapeHtml(record.calories || "-")} kcal &nbsp; | &nbsp;
+                    <strong>Price:</strong> $${escapeHtml(record.price || "-")}
+                </p>
+
+                <!-- Created Time -->
+                <span class="record-create-time">
+                    <i class="fa fa-calendar"></i> ${createdTimeText}
+                </span>
             </div>
 
             <div class="record-right">
@@ -57,7 +76,9 @@ function createRecordCard(task) {
                 <button class="record-btn complete-btn"><i class="fa fa-check"></i></button>
                 <button class="record-btn delete-btn"><i class="fa fa-trash"></i></button>
             </div>
+
         </div>
+
     `;
 }
 
@@ -99,7 +120,7 @@ function loadRecords() {
 }
 
 // Function to filter and display records based on selected brand
-function filterRecords() {
+function filterRecords(type) {
     if (type == "brand"){
         const selectedBrand = $('#brand-filter').val();
         const container = $('#records-container');
@@ -147,25 +168,16 @@ function loadBrands() {
                 const currentValue = select.val();
                 
                 select.empty();
-                select.append('<option value="none">None</option>');
+                select.append('<option value="all">All Brands</option>');
                 
                 response.brands.forEach(function(brand) {
-                    select.append(`<option value="${escapeHtml(brand)}">${escapeHtml(brand)}</option>`);
-                });
-
-                // Update brand filter
-                const filter = $('#brand-filter');
-                const currentFilterValue = filter.val();
-                
-                filter.empty();
-                filter.append('<option value="all">All Brands</option>');
-                
-                response.brands.forEach(function(brand) {
-                    filter.append(`<option value="${brand.id}">${escapeHtml(brand.name)}</option>`);
+                    select.append(`<option value="${brand.id}">${escapeHtml(brand.name)}</option>`);
                 });
                 
-                if (currentFilterValue) {
-                    filter.val(currentFilterValue);
+                window.brands = response.brands;
+                
+                if (currentValue) {
+                    select.val(currentValue);
                 }
 
                 // Update brands management section
