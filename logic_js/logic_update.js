@@ -25,7 +25,7 @@ $(document).ready(function() {
         updateDrinkOptions(recordBeingEdited.brand_id, recordBeingEdited.drink_name);
         updateToppingOptions(recordBeingEdited.brand_id, recordBeingEdited.topping);
         $("#edit-sugar").val(recordBeingEdited.sugar);
-        $("#edit-temp").val(recordBeingEdited.temperature);
+        $("#edit-temp").val(recordBeingEdited.temp);
 
         // Show popup
         $("#edit-modal-overlay").removeClass("hidden");
