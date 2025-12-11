@@ -3,10 +3,10 @@
 
     // Check if the user is logged in, if
     // not then redirect them to the index page
-    if (!isset($_SESSION['username'])) {
-        header("Location: index.php");
-        exit();
-    }
+    // if (!isset($_SESSION['username'])) {
+    //     header("Location: index.php");
+    //     exit();
+    // }
 ?>
 
 <!DOCTYPE html>
@@ -46,30 +46,20 @@
             
             <!-- Filter -->
             <div style="text-align: center; margin-bottom: 1.5rem;">
-                <label for="filter-type" style="margin-right: 0.5rem; font-weight: 600;">Filter by brand
-                    <!-- <select id="filter-type" class="text-box" style="max-width: 250px; display: inline-block;">
-                        <option value="brand">Brand</option>
-                        <option value="status">Status</option>
-                    </select> -->
-                    :
+                <label for="filter-type" style="margin-right: 0.5rem; font-weight: 600;">Filter by brand:
                 </label>
 
                 <select id="brand-filter" class="text-box" style="max-width: 250px; display: inline-block;">
                 </select>
-                <select id="complete-filter" class="text-box" style="max-width: 250px; display: inline-block;">
-                    <option value="all">All</option>
-                    <option value="complete">Complete</option>
-                    <option value="incomplete">Incomplete</option>
-                </select>
             </div>
 
             
-            <div id="todos-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+            <div id="records-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
                 <p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">Loading tasks...</p>
             </div>
         </div>
 
-    	<script src="../logic_js/logic.js"></script>
+    	<script src="../logic_js/read.js"></script>
 
     </body>
 

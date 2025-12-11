@@ -8,8 +8,12 @@
         $username = $_POST['username'];
         $password = $_POST['password'];
 
+        // Hash
+        include 'hash.php';
+        $password_hashed = adler_hash($password, 114514);
+
         // Prepare and execute
-        $stmt = $conn->prepare("SELECT password FROM userdata WHERE username = ?");
+        $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $stmt->store_result();
@@ -18,7 +22,7 @@
             $stmt->bind_result($db_password);
             $stmt->fetch();
 
-            if ($password === $db_password) {
+            if ($password_hashed === $db_password) {
                 $message = "Login successful";
                 $toastClass = "bg-success";
                 // Start the session and redirect to the dashboard or home page

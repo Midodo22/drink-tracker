@@ -152,38 +152,36 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on('click', '.delete-btn', function() {
-        if (confirm('Are you sure you want to delete this task?')) {
-            const todoCard = $(this).closest('.todo-item-card');
-            const taskName = todoCard.data('task-name');
-            
-            $.ajax({
-                url: '../logic_php/todo.php',
-                type: 'POST',
-                data: {
-                    action: 'delete',
-                    task_name: taskName
-                },
-                dataType: 'json',
-                success: function(response) {
-                    console.log('Delete response:', response);
-                    if (response.success) {
-                        todoCard.fadeOut(300, function() {
-                            $(this).remove();
-                            // Check if container is empty
-                            if ($('#todos-container .todo-item-card').length === 0) {
-                                $('#todos-container').html('<p style="text-align: center; color: #999; grid-column: 1/-1;">No tasks yet. Add your first task above!</p>');
-                            }
-                        });
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Delete error:', error);
+    $(document).on("click", ".delete-btn", function () {
+        if (!confirm("Are you sure you want to delete this drink record?")) return;
+
+        const card = $(this).closest(".todo-item-card");
+        const brand_id = card.data("brand-id");
+        const drink_name = card.data("drink-name");
+
+        $.ajax({
+            url: "../logic_php/delete.php",
+            type: "POST",
+            data: {
+                action: "delete_record",
+                brand_id: brand_id,
+                drink_name: drink_name
+            },
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    card.fadeOut(300, function () {
+                        $(this).remove();
+                    });
+                } else {
+                    alert("Error: " + response.message);
                 }
-            });
-        }
+            },
+            error: function (xhr, status, error) {
+                console.error("Delete error:", error);
+                alert("Failed to delete record.");
+            }
+        });
     });
 
     let recordBeingEdited = null;
@@ -256,94 +254,58 @@ $("#edit-form").on("submit", function(e){
 });
 
 
-function updateDrinkOptions(brand_id, selectedDrink=null){
-    const drinks = window.allDrinks.filter(d => d.brand_id == brand_id);
-    $("#edit-drink").empty();
-    drinks.forEach(d => {
-        const selected = d.drink_name === selectedDrink ? "selected" : "";
-        $("#edit-drink").append(`<option value="${d.drink_name}" ${selected}>${d.drink_name} ($${d.price}, ${d.calories} cal)</option>`);
-    });
-}
+    function updateDrinkOptions(brand_id, selectedDrink=null){
+        const drinks = window.allDrinks.filter(d => d.brand_id == brand_id);
+        $("#edit-drink").empty();
+        drinks.forEach(d => {
+            const selected = d.drink_name === selectedDrink ? "selected" : "";
+            $("#edit-drink").append(`<option value="${d.drink_name}" ${selected}>${d.drink_name} ($${d.price}, ${d.calories} cal)</option>`);
+        });
+    }
 
-function updateToppingOptions(brand_id, selectedTopping = null) {
-    const toppings = window.allToppings.filter(t => t.brand_id == brand_id);
-    const select = $("#edit-topping");
-    select.empty();
+    function updateToppingOptions(brand_id, selectedTopping = null) {
+        const toppings = window.allToppings.filter(t => t.brand_id == brand_id);
+        const select = $("#edit-topping");
+        select.empty();
 
-    toppings.forEach(t => {
-        const selected = t.topping_name === selectedTopping ? "selected" : "";
-        select.append(`<option value="${t.topping_name}" ${selected}>
-            ${t.topping_name} ($${t.price}, ${t.calories} cal)
-        </option>`);
-    });
-}
+        toppings.forEach(t => {
+            const selected = t.topping_name === selectedTopping ? "selected" : "";
+            select.append(`<option value="${t.topping_name}" ${selected}>
+                ${t.topping_name} ($${t.price}, ${t.calories} cal)
+            </option>`);
+        });
+    }
 
-function updateRecord(oldBrandId, oldDrinkName, newBrandId, newDrinkName, newTopping, newSugar, callback) {
-    $.ajax({
-        url: "../logic.php/update.php",
-        type: "POST",
-        data: {
-            action: "update_record",
-            old_brand_id: oldBrandId,
-            old_drink: oldDrinkName,
-            brand_id: newBrandId,
-            drink_name: newDrinkName,
-            topping: newTopping,
-            sugar: newSugar
-        },
-        dataType: "json",
-        success: function(response) {
-            if(response.success){
-                console.log("Record updated successfully!");
-                if(typeof callback === "function") callback(true);
-            } else {
-                alert("Error: " + response.message);
+    function updateRecord(oldBrandId, oldDrinkName, newBrandId, newDrinkName, newTopping, newSugar, callback){
+        $.ajax({
+            url: "../logic.php/update.php",
+            type: "POST",
+            data: {
+                action: "update_record",
+                old_brand_id: oldBrandId,
+                old_drink: oldDrinkName,
+                brand_id: newBrandId,
+                drink_name: newDrinkName,
+                topping: newTopping,
+                sugar: newSugar
+            },
+            dataType: "json",
+            success: function(response) {
+                if(response.success){
+                    console.log("Record updated successfully!");
+                    if(typeof callback === "function") callback(true);
+                } else {
+                    alert("Error: " + response.message);
+                    if(typeof callback === "function") callback(false);
+                }
+            },
+            error: function(xhr, status, error){
+                console.error("Failed to update record:", error);
+                alert("Failed to update record.");
                 if(typeof callback === "function") callback(false);
             }
-        },
-        error: function(xhr, status, error){
-            console.error("Failed to update record:", error);
-            alert("Failed to update record.");
-            if(typeof callback === "function") callback(false);
-        }
-    });
-}
-
-    $(document).on('click', '.delete-category-btn', function() {
-        const categoryItem = $(this).closest('.category-item');
-        const categoryName = categoryItem.data('category-name');
-        
-        if (categoryName.toLowerCase() === 'none') {
-            alert('Cannot delete "none" category');
-            return;
-        }
-        
-        if (confirm(`Are you sure you want to delete category "${categoryName}" and all its tasks?`)) {
-            $.ajax({
-                url: '../logic_php/todo.php',
-                type: 'POST',
-                data: {
-                    action: 'delete_category',
-                    category: categoryName
-                },
-                dataType: 'json',
-                success: function(response) {
-                    console.log('Delete category response:', response);
-                    if (response.success) {
-                        loadCategories();
-                        loadTodos();
-                        alert('Category and its tasks deleted successfully!');
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Delete category error:', error);
-                    alert('Failed to delete category. Please try again.');
-                }
-            });
-        }
-    });
+        });
+    }   
 });
 
 // Function to load all todos

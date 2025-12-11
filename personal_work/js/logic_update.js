@@ -12,7 +12,6 @@ $(document).ready(function() {
 
         // Fill modal fields
         // Brand scrolling to select
-        // NOTE: can we use window.brands
         $("#edit-brand").empty();
         window.brands.forEach(b => {
             const selected = b.brand_id == recordBeingEdited.brand_id ? "selected" : "";
