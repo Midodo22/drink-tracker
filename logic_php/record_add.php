@@ -76,16 +76,24 @@ if($toppings != NULL){
 }
 
 // Get last record_id of user
-$sql = "SELECT MAX(records.record_id) AS id
+$sql = "SELECT records.record_id AS id
 		FROM records
-		WHERE records.user_id = ?";
+		WHERE records.user_id = ?
+		ORDER BY records.record_id DESC
+		LIMIT 1";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 
 $result = $stmt->get_result();
-$record_id = $result->fetch_all(MYSQLI_ASSOC)[0]["id"] + 1;
+if($result->num_rows == 0){
+	$record_id = 0;
+}
+else{
+	$record_id = $result->fetch_all(MYSQLI_ASSOC)[0]["id"] + 1;
+}
+
 $stmt->close();
 
 // Insert into database
@@ -93,7 +101,7 @@ $sql = "INSERT INTO records (user_id, record_id, brand_id, drink_name, toppings,
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("iiissssii", $user_id, $record_id, $brand_id, $drink_name, $toppings, $temp, $sugar, $calories, $price);
+$stmt->bind_param("iiisssiii", $user_id, $record_id, $brand_id, $drink_name, $toppings, $temp, $sugar, $calories, $price);
 
 $stmt->execute();
 
