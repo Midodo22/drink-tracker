@@ -21,8 +21,8 @@ CREATE TABLE `friends` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `records` (
-  `user_id` int(11) NOT NULL,
   `record_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `brand_id` int(11) NOT NULL,
   `drink_name` varchar(20) NOT NULL,
   `toppings` varchar(20),
@@ -41,10 +41,11 @@ CREATE TABLE `toppings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(20) NOT NULL,
   `password` varchar(256) NOT NULL,
-  `invite_code` varchar(10)
+  `invite_code` varchar(10),
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `brands`
@@ -62,6 +63,16 @@ ALTER TABLE `records`
 ALTER TABLE `toppings`
   ADD PRIMARY KEY (`brand_id`,`name`);
 
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`username`);
+INSERT INTO users (username, password)
+VALUES ("admin", "3611673572");
+
+INSERT INTO records (user_id, record_id, brand_id, drink_name, temp, sugar, price)
+VALUES (1, 1, 1, "八曜和茶", "hot", "half", 35);
+
+INSERT INTO records (user_id, record_id, brand_id, drink_name, temp, sugar, price)
+VALUES (1, 2, 3, "伯爵可可拿鐵(L)", "normal", "less", 80);
+
+INSERT INTO records (user_id, record_id, brand_id, drink_name, temp, sugar, price, calories)
+VALUES (1, 3, 2, "極黑芝麻奶茶", "warm", "seven", 65, 554);
+
 COMMIT;

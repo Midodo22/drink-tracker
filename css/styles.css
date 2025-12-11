@@ -193,7 +193,6 @@ p {
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
-/* Completed styling */
 .record-item-card.completed {
   opacity: 0.6;
 }
@@ -223,14 +222,14 @@ p {
   gap: 0.75rem;
 }
 
-.record-name {
+.record-drink {
   margin: 0;
   font-weight: 700;
   font-size: 1.15em;
   color: var(--main_text);
 }
 
-.record-category {
+.record-brand {
   display: inline-block;
   background-color: var(--theme_green);
   color: white;
@@ -239,13 +238,13 @@ p {
   font-size: 0.85em;
 }
 
-.record-description {
+.record-topping {
   margin: 0;
   font-size: 0.95em;
   color: var(--main_text);
 }
 
-.record-deadline {
+.record-create-time {
   margin-top: 0.25rem;
   font-size: 0.85em;
   color: #444;
