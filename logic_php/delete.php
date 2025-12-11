@@ -1,13 +1,21 @@
 <?php
-require 'connect.php';
+require 'db_connect.php';
+header('Content-Type: application/json');
 
-$brand_id = $_GET['brand_id'];
-$name = $_GET['name'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_record') {
 
-$sql = "DELETE FROM drinks WHERE brand_id = ? AND name = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("is", $brand_id, $name);
-$stmt->execute();
+    $brand_id = $_POST['brand_id'];
+    $name = $_POST['name'];
 
-header("Location: operation.php");
-exit;
+    $sql = "DELETE FROM drinks WHERE brand_id = ? AND name = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $brand_id, $name);
+
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => $stmt->error]);
+    }
+    exit;
+}
+?>

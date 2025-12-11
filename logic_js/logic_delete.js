@@ -2,7 +2,7 @@ $(document).ready(function() {
     $(document).on("click", ".delete-btn", function () {
         if (!confirm("Are you sure you want to delete this drink record?")) return;
 
-        const card = $(this).closest(".todo-item-card");
+        const card = $(this).closest(".record-item-card");
         const brand_id = card.data("brand-id");
         const drink_name = card.data("drink-name");
 
