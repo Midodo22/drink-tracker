@@ -3,6 +3,8 @@ $(document).ready(function() {
     // loadRecords();
 
     let recordBeingEdited = null;
+    let price = 0;
+
     // OPEN EDIT POPUP
     $(document).on("click", ".edit-btn", function () {
         console.log("Opened edit console")
@@ -22,6 +24,7 @@ $(document).ready(function() {
             const selected = b.id == recordBeingEdited.brand_id ? "selected" : "";
             $("#edit-brand").append(`<option value="${b.id}" ${selected}>${escapeHtml(b.name)}</option>`);
         });
+        
         updateDrinkOptions(recordBeingEdited.brand_id, recordBeingEdited.drink_name);
         updateToppingOptions(recordBeingEdited.brand_id, recordBeingEdited.topping);
         $("#edit-sugar").val(recordBeingEdited.sugar);
@@ -49,9 +52,12 @@ $(document).ready(function() {
 
         const newBrandId = $("#edit-brand").val();  // brand_id
         const newDrinkName = $("#edit-drink").val();  // drink_name
-        const newTopping = $("#edit-topping").val();
+        const toppingVal = $("#edit-topping").val();
+        const newTopping = toppingVal === "null" || toppingVal === "" ? null : toppingVal;
+
         const newSugar = $("#edit-sugar").val();
         const newTemp = $("#edit-temp").val();
+        const newPrice = calculatePrice(newBrandId, newDrinkName, newTopping);
 
         updateRecord(
             recordBeingEdited.record_id,
@@ -60,6 +66,7 @@ $(document).ready(function() {
             newTopping,
             newSugar,
             newTemp,
+            newPrice,
             function(success){
                 if(success){
                     recordBeingEdited.brand_id = newBrandId;
@@ -67,6 +74,7 @@ $(document).ready(function() {
                     recordBeingEdited.topping = newTopping;
                     recordBeingEdited.sugar = newSugar;
                     recordBeingEdited.temp = newTemp;
+                    recordBeingEdited.price = newPrice;
 
                     loadRecords();
                     $("#edit-modal-overlay").addClass("hidden");
@@ -81,7 +89,7 @@ function updateDrinkOptions(brand_id, selectedDrink=null){
     $("#edit-drink").empty();
     drinks.forEach(d => {
         const selected = d.name === selectedDrink ? "selected" : "";
-        $("#edit-drink").append(`<option value="${d.name}" ${selected}>${d.name} ($${d.price}, ${d.calories} cal)</option>`);
+        $("#edit-drink").append(`<option value="${d.name}" data-price="${d.price}" ${selected}>${d.name} ($${d.price}, ${d.calories} cal)</option>`);
     });
 }
 
@@ -90,16 +98,24 @@ function updateToppingOptions(brand_id, selectedTopping = null){
     const select = $("#edit-topping");
     select.empty();
 
+    select.append(`<option value="null" selected>None</option>`);
     toppings.forEach(t => {
         const selected = t.name === selectedTopping ? "selected" : "";
-        select.append(`<option value="${t.name}" ${selected}>
-            ${t.name} ($${t.price}, ${t.calories} cal)
-        </option>`);
-        });
+        select.append(`<option value="${t.name}" ${selected}> ${t.name} ($${t.price}, ${t.calories} cal) </option>`);
+    });
 }
 
 
-function updateRecord(recordId, newBrandId, newDrinkName, newTopping, newSugar, newTemp, callback){
+function calculatePrice(brandId, drinkName, toppingName){
+    const drink = window.allDrinks.find(d => String(d.brand_id) === String(brandId) && d.name === drinkName);
+    const topping = window.allToppings.find(t => String(t.brand_id) === String(brandId) && t.name === toppingName);
+    const drinkPrice = drink ? Number(drink.price) : 0;
+    const toppingPrice = topping ? Number(topping.price) : 0;
+    return drinkPrice + toppingPrice;
+}
+
+
+function updateRecord(recordId, newBrandId, newDrinkName, newTopping, newSugar, newTemp, newPrice, callback){
     $.ajax({
         url: "../logic_php/update.php",
         type: "POST",
@@ -110,7 +126,8 @@ function updateRecord(recordId, newBrandId, newDrinkName, newTopping, newSugar, 
             drink_name: newDrinkName,
             topping: newTopping,
             sugar: newSugar,
-            temp: newTemp
+            temp: newTemp,
+            price: newPrice
         },
         dataType: "json",
         success: function(response) {

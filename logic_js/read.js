@@ -3,31 +3,25 @@ $(document).ready(function() {
     
     loadBrands();
     loadRecords();
-    loadAllDrinks();
-    loadAllToppings();
 
-    // filter
-    // document.getElementById("filter-type").addEventListener("change", function () {
-    //     const type = this.value;
+    $.when(loadAllDrinks(), loadAllToppings()).done(() => {
+        loadDrinkOptions(-1);
+        loadToppingOptions(-1);
+    });
 
-    //     const brandFilter = document.getElementById("brand-filter");
-    //     const completeFilter = document.getElementById("complete-filter");
-
-    //     if (type === "brand") {
-    //         brandFilter.style.display = "inline-block";
-    //         completeFilter.style.display = "none";
-    //         filterRecords("brand");
-    //     }
-    // });
+    // create selection
+    document.getElementById("create-brand").addEventListener("change", function () {
+        const brand_id = this.value;
+        loadDrinkOptions(brand_id);
+        loadToppingOptions(brand_id);
+    });
 
     // init filter
-
     document.getElementById("brand-filter").addEventListener("change", function () {
         filterRecords("brand");
     });
 
 });
-
 
 function createRecordCard(record) {
     const createdTimeText = record.created_at
@@ -190,7 +184,25 @@ function loadBrands() {
         success: function(response) {
             console.log('Brands response:', response);
             if (response.success) {
-                // Update dropdown
+                // Update create dropdown
+                const createSelect = $('#create-brand');
+                const currentCreate = createSelect.val();
+                
+                createSelect.empty();
+                createSelect.append('<option value="" disabled selected>Select a brand</option>');
+                createSelect.append('<option value="all">All Brands</option>');
+                
+                response.brands.forEach(function(brand) {
+                    createSelect.append(`<option value="${brand.id}">${escapeHtml(brand.name)}</option>`);
+                });
+
+                window.brands = response.brands;
+                
+                if (currentCreate) {
+                    createSelect.val(currentCreate);
+                }
+
+                // Update filter dropdown
                 const select = $('#brand-filter');
                 const currentValue = select.val();
                 
@@ -216,7 +228,7 @@ function loadBrands() {
 
 function loadAllDrinks() {
     console.log('Loading all drink options...');
-    $.ajax({
+    return $.ajax({
         url: '../logic_php/read.php',
         type: 'POST',
         data: { action: 'get_drinks' },
@@ -236,7 +248,7 @@ function loadAllDrinks() {
 
 function loadAllToppings() {
     console.log('Loading all topping options...');
-    $.ajax({
+    return $.ajax({
         url: '../logic_php/read.php',
         type: 'POST',
         data: { action: 'get_toppings' },
@@ -252,6 +264,42 @@ function loadAllToppings() {
             console.error('Load drinks error:', error);
         }
     });
+}
+
+function loadDrinkOptions(brand_id) {
+    const select = $("#create-drink");
+    select.empty();
+    select.append(`<option value="" disabled selected>Select a drink</option>`)
+    if (brand_id === -1) {
+        window.allDrinks.forEach(d => {
+            select.append(`<option value="${d.name}">${d.name} ($${d.price}, ${d.calories} cal)</option>`);
+        });
+        console.log("Initialized drink options")
+    }
+    else {
+        const drinks = window.allDrinks.filter(d => d.brand_id == brand_id);
+        drinks.forEach(d => {
+            select.append(`<option value="${d.name}">${d.name} ($${d.price}, ${d.calories} cal)</option>`);
+        });
+    }
+}
+
+function loadToppingOptions(brand_id) {
+    const select = $("#create-topping");
+    select.empty();
+    select.append(`<option value="" disabled selected>Select a topping</option>`)
+    if (brand_id === -1) {
+        window.allToppings.forEach(t => {
+            select.append(`<option value="${t.name}">${t.name} ($${t.price}, ${t.calories} cal)</option>`);
+        });
+        console.log("Initialized topping options")
+    }
+    else {
+        const toppings = window.allToppings.filter(t => t.brand_id == brand_id);
+        toppings.forEach(t => {
+            select.append(`<option value="${t.name}">${t.name} ($${t.price}, ${t.calories} cal)</option>`);
+        });
+    }
 }
 
 // Helper function to escape HTML

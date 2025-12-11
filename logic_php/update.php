@@ -14,13 +14,14 @@
         $new_topping = $_POST['topping'];
         $new_sugar = intval($_POST['sugar']);
         $new_temp = $_POST['temp'];
+        $new_price = isset($_POST['price']) ? intval($_POST['price']) : null;
 
         // Update records
         $update_sql = "UPDATE records 
-                    SET brand_id = ?, drink_name = ?, toppings = ?, sugar = ?, temp = ? 
+                    SET brand_id = ?, drink_name = ?, toppings = ?, sugar = ?, temp = ?, price = ? 
                     WHERE record_id=? AND user_id = ?";
         $update_stmt = $conn->prepare($update_sql);
-        $update_stmt->bind_param("issisii", $new_brand_id, $new_drink, $new_topping, $new_sugar, $new_temp, $record_id, $user_id);
+        $update_stmt->bind_param("issisiii", $new_brand_id, $new_drink, $new_topping, $new_sugar, $new_temp, $new_price, $record_id, $user_id);
 
         if ($update_stmt->execute()) {
             echo json_encode(['success' => true]);
