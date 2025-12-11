@@ -10,10 +10,10 @@
 
         // Hash
         include 'hash.php';
-        $password_hashed = hash($password, 114514);
+        $password_hashed = adler_hash($password, 114514);
 
         // Prepare and execute
-        $stmt = $conn->prepare("SELECT password FROM userdata WHERE username = ?");
+        $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $stmt->store_result();

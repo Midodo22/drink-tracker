@@ -10,10 +10,10 @@
 
         // Hash
         include 'hash.php';
-        $password_hashed = hash($password, 114514);
+        $password_hashed = adler_hash($password, 114514);
 
         // Check if username already exists
-        $checkUnStmt = $conn->prepare("SELECT username FROM userdata WHERE username = ?");
+        $checkUnStmt = $conn->prepare("SELECT username FROM users WHERE username = ?");
         $checkUnStmt->bind_param("s", $username);
         $checkUnStmt->execute();
         $checkUnStmt->store_result();
@@ -23,7 +23,7 @@
             $toastClass = "#007bff";
         } else {
             // Prepare and bind
-            $stmt = $conn->prepare("INSERT INTO userdata (username, password) VALUES (?, ?)");
+            $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
             $stmt->bind_param("ss", $username, $password_hashed);
 
             if ($stmt->execute()) {
