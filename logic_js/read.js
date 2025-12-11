@@ -36,7 +36,34 @@ function createRecordCard(record) {
               month: "short",
               day: "numeric"
           })
-        : "No data";
+        : "無資料";
+
+    const tempMap = {
+        "normal": "正常",
+        "half": "少冰",
+        "less": "微冰",
+        "little": "去冰",
+        "none": "完全去冰",
+        "warm": "溫",
+        "hot": "熱"
+    };
+
+    const sugarMap = {
+        "10": 10,
+        "9": 9,
+        "8": 8,
+        "7": 7,
+        "6": 6,
+        "5": 5,
+        "4": 4,
+        "3": 3,
+        "2": 2,
+        "1": 1,
+        "0": 0
+    };
+    
+    const displayTemp = tempMap[record.temp] || record.temp || "-";
+    const displaySugar = sugarMap[record.sugar] || record.sugar || "-";
 
     return `
         <div class="record-item-card"
@@ -59,8 +86,8 @@ function createRecordCard(record) {
 
                 <!-- Temperature & Sugar -->
                 <p class="record-topping">
-                    <strong>Temp:</strong> ${escapeHtml(record.temp || "-")} &nbsp; | &nbsp;
-                    <strong>Sugar:</strong> ${escapeHtml(record.sugar != null ? record.sugar : "-")} grams &nbsp; | &nbsp;
+                    <strong>Temp:</strong> ${escapeHtml(displayTemp)} &nbsp; | &nbsp;
+                    <strong>Sugar:</strong> ${escapeHtml(displaySugar)} &nbsp; | &nbsp;
                     
                     <strong>Calories:</strong> ${escapeHtml(record.calories || "-")} kcal &nbsp; | &nbsp;
                     <strong>Price:</strong> $${escapeHtml(record.price || "-")}
@@ -74,7 +101,6 @@ function createRecordCard(record) {
 
             <div class="record-right">
                 <button class="record-btn edit-btn"><i class="fa fa-edit"></i></button>
-                <button class="record-btn complete-btn"><i class="fa fa-check"></i></button>
                 <button class="record-btn delete-btn"><i class="fa fa-trash"></i></button>
             </div>
 
