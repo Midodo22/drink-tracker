@@ -1,103 +1,96 @@
 <?php
+	session_start();
+	require "db_connect.php";
+	$stmt = $conn->stmt_init();
 
-require "db_connect.php";
-$stmt = $conn->stmt_init();
+	if (!isset($_SESSION['username'])) {
+		header("Location: ../pages/dashboard.php");
+		exit();
+	}
 
-$username = $_SESSION['username'];
+	$username = $_SESSION['username'];
+	$user_id = $_SESSION['user_id'];
 
-$brand_name = $_POST[""];
-// $brand_id = $_POST[""];
-$drink_name = $_POST[""];
-$toppings = $_POST[""];
-$temp = $_POST[""];
-$sugar = $_POST[""];
+	// Pull posted values; topping can be empty
+	$brand_id = isset($_POST["create-brand"]) ? (int)$_POST["create-brand"] : 0;
+	$drink_name = isset($_POST["create-drink"]) ? trim($_POST["create-drink"]) : "";
+	$toppings = isset($_POST["create-topping"]) ? trim($_POST["create-topping"]) : null;
+	$temp = isset($_POST["create-temp"]) ? trim($_POST["create-temp"]) : "";
+	$sugar = isset($_POST["create-sugar"]) ? (int)$_POST["create-sugar"] : 0;
 
-$calories = 0;
-$price = 0;
+	if ($drink_name === "") {
+		header("Location: ../pages/dashboard.php");
+		exit();
+	}
 
-// Get user id
-$sql = "SELECT users.id AS id
-		FROM users
-		WHERE users.username = ?";
+	$calories = 0;
+	$price = 0;
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $username);
-$stmt->execute();
-
-$result = $stmt->get_result();
-$user_id = $result->fetch_all(MYSQLI_ASSOC)[0]["id"];
-$stmt->close();
-
-// Get brand id (can delete if not needed)
-$sql = "SELECT brands.id AS id
-		FROM brands
-		WHERE brands.name = ?";
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $brand_name);
-$stmt->execute();
-
-$result = $stmt->get_result();
-$brand_id = $result->fetch_all(MYSQLI_ASSOC)[0]["id"];
-$stmt->close();
-
-// Get drink price and caloires
-$sql = "SELECT drinks.price AS price, drinks.calories AS calories
-		FROM drinks
-		WHERE drinks.brand_id = ? AND drinks.name = ?";
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("is", $brand_id, $drink_name);
-$stmt->execute();
-
-$result = $stmt->get_result();
-$tmp = $result->fetch_all(MYSQLI_ASSOC)[0];
-
-$price += $tmp["price"];
-$calories += $tmp["calories"];
-$stmt->close();
-
-// Get topping price and calories (if topping is not null)
-if($toppings != NULL){
-	$sql = "SELECT toppings.price AS price, toppings.calories AS calories
-			FROM toppings
-			WHERE toppings.brand_id = ? AND toppings.name = ?";
+	// Get drink price and calories
+	$sql = "SELECT drinks.price AS price, drinks.calories AS calories
+			FROM drinks
+			WHERE drinks.brand_id = ? AND drinks.name = ?";
 
 	$stmt = $conn->prepare($sql);
-	$stmt->bind_param("is", $brand_id, $toppings);
+	$stmt->bind_param("is", $brand_id, $drink_name);
 	$stmt->execute();
 
 	$result = $stmt->get_result();
-	$tmp = $result->fetch_all(mode: MYSQLI_ASSOC)[0];
+	$tmp = $result->fetch_all(MYSQLI_ASSOC)[0];
 
 	$price += $tmp["price"];
 	$calories += $tmp["calories"];
 	$stmt->close();
-}
 
-// Get last record_id of user
-$sql = "SELECT MAX(records.record_id) AS id
-		FROM records
-		WHERE records.user_id = ?";
+	// Get topping price and calories (if topping is not empty)
+	if($toppings !== null && $toppings !== ""){
+		$sql = "SELECT toppings.price AS price, toppings.calories AS calories
+				FROM toppings
+				WHERE toppings.brand_id = ? AND toppings.name = ?";
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
+		$stmt = $conn->prepare($sql);
+		$stmt->bind_param("is", $brand_id, $toppings);
+		$stmt->execute();
 
-$result = $stmt->get_result();
-$record_id = $result->fetch_all(MYSQLI_ASSOC)[0]["id"] + 1;
-$stmt->close();
+		$result = $stmt->get_result();
+		$tmp = $result->fetch_all(mode: MYSQLI_ASSOC)[0];
 
-// Insert into database
-$sql = "INSERT INTO records (user_id, record_id, brand_id, drink_name, toppings, temp, sugar, calories, price)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		$price += $tmp["price"];
+		$calories += $tmp["calories"];
+		$stmt->close();
+	}
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("iiissssii", $user_id, $record_id, $brand_id, $drink_name, $toppings, $temp, $sugar, $calories, $price);
+	// Get last record_id of user
+	$sql = "SELECT records.record_id AS id
+			FROM records
+			WHERE records.user_id = ?
+			ORDER BY records.record_id DESC
+			LIMIT 1";
 
-$stmt->execute();
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param("i", $user_id);
+	$stmt->execute();
 
-// Redirect back to dashboard
-header("Location: ../pages/dashboard.php");
+	$result = $stmt->get_result();
+	if($result->num_rows == 0){
+		$record_id = 0;
+	}
+	else{
+		$record_id = $result->fetch_all(MYSQLI_ASSOC)[0]["id"] + 1;
+	}
+
+	$stmt->close();
+
+	// Insert into database
+	$sql = "INSERT INTO records (user_id, record_id, brand_id, drink_name, toppings, temp, sugar, calories, price)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param("iiisssiii", $user_id, $record_id, $brand_id, $drink_name, $toppings, $temp, $sugar, $calories, $price);
+
+	$stmt->execute();
+
+	// Redirect back to dashboard
+	header("Location: ../pages/dashboard.php");
 
 ?>

@@ -1,15 +1,16 @@
 $(document).ready(function() {
-    loadBrands();
-    loadRecords();
+    // loadBrands();
+    // loadRecords();
 
     let recordBeingEdited = null;
     // OPEN EDIT POPUP
     $(document).on("click", ".edit-btn", function () {
-        const card = $(this).closest(".record-item-card");
-        const brand_id = card.data("brand_id");
-        const drink_name = card.data("drink_name");
+        console.log("Opened edit console")
 
-        recordBeingEdited = window.allRecords.find(r => r.brand_id == brand_id && r.drink_name === drink_name);
+        const card = $(this).closest(".record-item-card");
+        const record_id = card.data("record-id");
+
+        recordBeingEdited = window.allRecords.find(r => r.record_id == record_id);
 
         if (!recordBeingEdited) return;
 
@@ -23,8 +24,8 @@ $(document).ready(function() {
         });
         updateDrinkOptions(recordBeingEdited.brand_id, recordBeingEdited.drink_name);
         updateToppingOptions(recordBeingEdited.brand_id, recordBeingEdited.topping);
-        $("#edit-sugar").val(recordBeingEdited.sugar);
-        $("#edit-temp").val(recordBeingEdited.temperature);
+        updateSugarOptions(recordBeingEdited.sugar);
+        updateTempOptions(recordBeingEdited.temp);
 
         // Show popup
         $("#edit-modal-overlay").removeClass("hidden");
@@ -53,8 +54,7 @@ $(document).ready(function() {
         const newTemp = $("#edit-temp").val();
 
         updateRecord(
-            recordBeingEdited.brand_id,
-            recordBeingEdited.drink_name,
+            recordBeingEdited.record_id,
             newBrandId,
             newDrinkName,
             newTopping,
@@ -75,97 +75,6 @@ $(document).ready(function() {
         );
     });
 });
-
-function loadBrands() {
-    console.log('Loading brands...');
-    $.ajax({
-        url: '../logic_php/read.php',
-        type: 'POST',
-        data: { action: 'get_brands' },
-        dataType: 'json',
-        success: function(response) {
-            console.log('Brands response:', response);
-            if (response.success) {
-                // Update dropdown
-                const select = $('#brand-filter');
-                const currentValue = select.val();
-                
-                select.empty();
-                select.append('<option value="none">None</option>');
-                
-                response.brands.forEach(function(brand) {
-                    select.append(`<option value="${escapeHtml(brand)}">${escapeHtml(brand)}</option>`);
-                });
-
-                // Update brand filter
-                const filter = $('#brand-filter');
-                const currentFilterValue = filter.val();
-                
-                filter.empty();
-                filter.append('<option value="all">All Brands</option>');
-                
-                response.brands.forEach(function(brand) {
-                    filter.append(`<option value="${brand.id}">${escapeHtml(brand.name)}</option>`);
-                });
-
-                window.brands = response.brands;
-                
-                if (currentFilterValue) {
-                    filter.val(currentFilterValue);
-                }
-
-                // Update brands management section
-                // const brandsList = $('#brands-list');
-                // brandsList.empty();
-                
-                // response.brands.forEach(function(brands) {
-                //     const brandItem = createBrandItem(brands);
-                //     brandsList.append(brandItem);
-                // });
-                // Not in use
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Load brands error:', error);
-        }
-    });
-}
-
-function loadRecords() {
-    console.log('Loading records...');
-    $.ajax({
-        url: '../logic_php/read.php',
-        type: 'POST',
-        data: { action: 'get_all' },
-        dataType: 'json',
-        success: function(response) {
-            console.log('Records response:', response);
-            if (response.success) {
-                const container = $('#records-container');
-                container.empty();
-                
-                // Store all records globally for filtering
-                window.allRecords = response.records;
-                
-                if (response.records.length === 0) {
-                    container.html('<p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">No records yet. Add your first record above!</p>');
-                }
-                else {
-                    filterRecords("brand");
-                }
-            }
-            else {
-                console.error('Failed to load records:', response.message);
-                $('#records-container').html('<p style="text-align: center; color: #f44336; grid-column: 1/-1; font-weight: 600;">Error loading records. Please refresh the page.</p>');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Load records error:', error);
-            console.error('Response:', xhr.responseText);
-            $('#records-container').html('<p style="text-align: center; color: #f44336; grid-column: 1/-1; font-weight: 600;">Error loading records. Please refresh the page.</p>');
-        }
-    });
-}
 
 function updateDrinkOptions(brand_id, selectedDrink=null){
     const drinks = window.allDrinks.filter(d => d.brand_id == brand_id);
@@ -189,15 +98,56 @@ function updateToppingOptions(brand_id, selectedTopping = null){
         });
 }
 
+function updateSugarOptions(selectedSugar = null) {
+    const sugarOptions = [
+        { value: 10, label: "正常" },
+        { value: 9, label: "9" },
+        { value: 8, label: "少糖" },
+        { value: 7, label: "七分糖" },
+        { value: 6, label: "6" },
+        { value: 5, label: "半糖" },
+        { value: 4, label: "4" },
+        { value: 3, label: "微糖" },
+        { value: 2, label: "2" },
+        { value: 1, label: "一分糖" },
+        { value: 0, label: "無糖" }
+    ];
 
-function updateRecord(oldBrandId, oldDrinkName, newBrandId, newDrinkName, newTopping, newSugar, newTemp, callback){
+    const select = $("#edit-sugar");
+    select.empty();
+    sugarOptions.forEach(s => {
+        const selected = String(s.value) === String(selectedSugar) ? "selected" : "";
+        select.append(`<option value="${s.value}" ${selected}>${s.label}</option>`);
+    });
+}
+
+function updateTempOptions(selectedTemp = null) {
+    const tempOptions = [
+        { value: "normal", label: "正常" },
+        { value: "half", label: "少冰" },
+        { value: "less", label: "微冰" },
+        { value: "little", label: "去冰" },
+        { value: "none", label: "完全去冰" },
+        { value: "warm", label: "溫" },
+        { value: "hot", label: "熱" }
+    ];
+
+    const select = $("#edit-temp");
+    select.empty();
+    tempOptions.forEach(t => {
+        const selected = String(t.value) === String(selectedTemp) ? "selected" : "";
+        select.append(`<option value="${t.value}" ${selected}>${t.label}</option>`);
+    });
+}
+
+
+function updateRecord(recordId, newBrandId, newDrinkName, newTopping, newSugar, newTemp, callback){
     $.ajax({
         url: "../logic_php/update.php",
         type: "POST",
         data: {
             action: "update_record",
-            old_brand_id: oldBrandId,
-            old_drink: oldDrinkName,
+            record_id: recordId,
             brand_id: newBrandId,
             drink_name: newDrinkName,
             topping: newTopping,
@@ -209,7 +159,8 @@ function updateRecord(oldBrandId, oldDrinkName, newBrandId, newDrinkName, newTop
             if(response.success){
                 console.log("Record updated successfully!");
                 if(typeof callback === "function") callback(true);
-            } else {
+            }
+            else {
                 alert("Error: " + response.message);
                 if(typeof callback === "function") callback(false);
             }
