@@ -2,130 +2,188 @@ $(document).ready(function() {
     console.log('Page loaded, initializing...');
     
     loadBrands();
-    
     loadRecords();
+    loadAllDrinks();
+    loadAllToppings();
 
     // filter
-    document.getElementById("filter-type").addEventListener("change", function () {
-        const type = this.value;
+    // document.getElementById("filter-type").addEventListener("change", function () {
+    //     const type = this.value;
 
-        const brandFilter = document.getElementById("brand-filter");
-        const completeFilter = document.getElementById("complete-filter");
+    //     const brandFilter = document.getElementById("brand-filter");
+    //     const completeFilter = document.getElementById("complete-filter");
 
-        if (type === "brand") {
-            brandFilter.style.display = "inline-block";
-            completeFilter.style.display = "none";
-            filterRecords("brand");
-        }
-    });
+    //     if (type === "brand") {
+    //         brandFilter.style.display = "inline-block";
+    //         completeFilter.style.display = "none";
+    //         filterRecords("brand");
+    //     }
+    // });
 
     // init filter
-    document.getElementById("complete-filter").style.display = "none";
 
-    document.getElementById("category-filter").addEventListener("change", function () {
-        filterRecords("Category");
-    });
-    
-    document.getElementById("complete-filter").addEventListener("change", function () {
-        filterRecords("Status");
+    document.getElementById("brand-filter").addEventListener("change", function () {
+        filterRecords("brand");
     });
 
 });
 
-// Function to load all todos
+
+function createRecordCard(record) {
+    const createdTimeText = record.created_at
+        ? new Date(record.created_at).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric"
+          })
+        : "無資料";
+
+    const tempMap = {
+        "normal": "正常",
+        "half": "少冰",
+        "less": "微冰",
+        "little": "去冰",
+        "none": "完全去冰",
+        "warm": "溫",
+        "hot": "熱"
+    };
+
+    const sugarMap = {
+        "10": 10,
+        "9": 9,
+        "8": 8,
+        "7": 7,
+        "6": 6,
+        "5": 5,
+        "4": 4,
+        "3": 3,
+        "2": 2,
+        "1": 1,
+        "0": 0
+    };
+    
+    const displayTemp = tempMap[record.temp] || record.temp || "-";
+    const displaySugar = sugarMap[record.sugar] || record.sugar || "-";
+
+    return `
+        <div class="record-item-card"
+            data-record-id="${record.record_id}"
+            data-user-id="${record.user_id}"
+            data-brand-id="${record.brand_id}">
+
+            <div class="record-left">
+
+                <!-- Top Row: Drink + Brand -->
+                <div class="record-top-row">
+                    <h3 class="record-drink">${escapeHtml(record.drink_name)}</h3>
+                    <span class="record-brand">${escapeHtml(record.brand_name || "Unknown")}</span>
+
+                    <!-- Toppings -->
+                    <p class="record-topping">
+                        <strong>Toppings:</strong> ${escapeHtml(record.toppings || "None")}
+                    </p>
+                </div>
+
+                <!-- Temperature & Sugar -->
+                <p class="record-topping">
+                    <strong><i class="fa fa-thermometer-half"></i> Temp:</strong> ${escapeHtml(displayTemp)} &nbsp; | &nbsp;
+                    <strong><i class="fa fa-cube"></i> Sugar:</strong> ${escapeHtml(displaySugar)} &nbsp; | &nbsp;
+                    
+                    <strong><i class="bi bi-fire"></i> Calories:</strong> ${escapeHtml(record.calories || "-")} kcal &nbsp; | &nbsp;
+                    <strong><i class="bi bi-coin"></i> Price:</strong> $${escapeHtml(record.price || "-")}
+                </p>
+
+                <!-- Created Time -->
+                <span class="record-create-time">
+                    <i class="fa fa-calendar"></i> ${createdTimeText}
+                </span>
+            </div>
+
+            <div class="record-right">
+                <button class="record-btn edit-btn"><i class="fa fa-edit"></i></button>
+                <button class="record-btn delete-btn"><i class="fa fa-trash"></i></button>
+            </div>
+
+        </div>
+
+    `;
+}
+
+// Function to load all records
 function loadRecords() {
-    console.log('Loading tasks...');
+    console.log('Loading records...');
     $.ajax({
-        url: '../logic_php/todo.php',
+        url: '../logic_php/read.php',
         type: 'POST',
         data: { action: 'get_all' },
         dataType: 'json',
         success: function(response) {
-            console.log('Tasks response:', response);
+            console.log('Records response:', response);
             if (response.success) {
-                const container = $('#todos-container');
+                const container = $('#records-container');
                 container.empty();
                 
-                // Store all tasks globally for filtering
-                window.allTasks = response.tasks;
+                // Store all records globally for filtering
+                window.allRecords = response.records;
                 
-                if (response.tasks.length === 0) {
-                    container.html('<p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">No tasks yet. Add your first task above!</p>');
-                } else {
-                    let type = document.getElementById("filter-type").value;
-                    filterRecords(type);
+                if (response.records.length === 0) {
+                    container.html('<p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">No records yet. Add your first record above!</p>');
                 }
-            } else {
-                console.error('Failed to load tasks:', response.message);
-                $('#todos-container').html('<p style="text-align: center; color: #f44336; grid-column: 1/-1; font-weight: 600;">Error loading tasks. Please refresh the page.</p>');
+                else {
+                    filterRecords("brand");
+                }
+            }
+            else {
+                console.error('Failed to load records:', response.message);
+                $('#records-container').html('<p style="text-align: center; color: #f44336; grid-column: 1/-1; font-weight: 600;">Error loading records. Please refresh the page.</p>');
             }
         },
         error: function(xhr, status, error) {
-            console.error('Load tasks error:', error);
+            console.error('Load records error:', error);
             console.error('Response:', xhr.responseText);
-            $('#todos-container').html('<p style="text-align: center; color: #f44336; grid-column: 1/-1; font-weight: 600;">Error loading tasks. Please refresh the page.</p>');
+            $('#records-container').html('<p style="text-align: center; color: #f44336; grid-column: 1/-1; font-weight: 600;">Error loading records. Please refresh the page.</p>');
         }
     });
 }
 
-// Function to filter and display todos based on selected category
+// Function to filter and display records based on selected brand
 function filterRecords(type) {
-    if (type == "Status"){
-        const selectedStatus = $('#complete-filter').val(); 
-        const container = $('#todos-container');
+    if (type == "brand"){
+        const selectedBrand = $('#brand-filter').val();
+        const container = $('#records-container');
         container.empty();
-
-        if (!window.allTasks || window.allTasks.length === 0) {
-            container.html('<p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">No tasks yet. Add your first task above!</p>');
+        
+        if (!window.allRecords || window.allRecords.length === 0) {
+            container.html('<p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">No records yet. Add your first record above!</p>');
             return;
         }
 
-        const filteredTasks =
-            selectedStatus === 'all'
-                ? window.allTasks
-                : window.allTasks.filter(task => {
-                    if (selectedStatus === 'complete') return task.completed === 1;
-                    if (selectedStatus === 'incomplete') return task.completed === 0;
-                });
-
-        if (filteredTasks.length === 0) {
-            container.html('<p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">No tasks with this status.</p>');
+        let filteredRecords;
+        if (selectedBrand === 'all') {
+            filteredRecords = window.allRecords;
         } else {
-            filteredTasks.forEach(function(task) {
-                const todoCard = createTodoCard(task);
-                container.append(todoCard);
+            const selectedBrandId = parseInt(selectedBrand, 10);
+            filteredRecords = window.allRecords.filter(record => record.brand_id === selectedBrandId);
+        }
+        
+        if (filteredRecords.length === 0) {
+            container.html('<p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">No records under this brand.</p>');
+        } else {
+            filteredRecords.forEach(function(record) {
+                const recordCard = createRecordCard(record);
+                container.append(recordCard);
             });
         }
     }
     else {
-        const selectedCategory = $('#category-filter').val();
-        const container = $('#todos-container');
-        container.empty();
-        
-        if (!window.allTasks || window.allTasks.length === 0) {
-            container.html('<p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">No tasks yet. Add your first task above!</p>');
-            return;
-        }
-        
-        const filteredTasks = selectedCategory === 'all' 
-            ? window.allTasks 
-            : window.allTasks.filter(task => task.category === selectedCategory);
-        
-        if (filteredTasks.length === 0) {
-            container.html('<p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">No tasks in this category.</p>');
-        } else {
-            filteredTasks.forEach(function(task) {
-                const todoCard = createTodoCard(task);
-                container.append(todoCard);
-            });
-        }
+        console.log("Error: Invalid filter type")
     }
 }
 
-function loadbrands() {
+function loadBrands() {
     console.log('Loading brands...');
     $.ajax({
-        url: '../logic_php/todo.php',
+        url: '../logic_php/read.php',
         type: 'POST',
         data: { action: 'get_brands' },
         dataType: 'json',
@@ -133,51 +191,65 @@ function loadbrands() {
             console.log('Brands response:', response);
             if (response.success) {
                 // Update dropdown
-                const select = $('#todo-category');
+                const select = $('#brand-filter');
                 const currentValue = select.val();
                 
                 select.empty();
-                select.append('<option value="none">None</option>');
+                select.append('<option value="all">All Brands</option>');
                 
-                response.brands.forEach(function(category) {
-                    if (category.toLowerCase() !== 'none') {
-                        select.append(`<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`);
-                    }
+                response.brands.forEach(function(brand) {
+                    select.append(`<option value="${brand.id}">${escapeHtml(brand.name)}</option>`);
                 });
+
+                window.brands = response.brands;
                 
-                select.append('<option value="custom">+ Add New Category</option>');
-                
-                if (currentValue && currentValue !== 'custom') {
+                if (currentValue) {
                     select.val(currentValue);
                 }
-
-                // Update brand filter
-                const filter = $('#brand-filter');
-                const currentFilterValue = filter.val();
-                
-                filter.empty();
-                filter.append('<option value="all">All Brands</option>');
-                
-                response.brands.forEach(function(category) {
-                    filter.append(`<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`);
-                });
-                
-                if (currentFilterValue) {
-                    filter.val(currentFilterValue);
-                }
-
-                // Update category management section
-                const brandsList = $('#brands-list');
-                brandsList.empty();
-                
-                response.brands.forEach(function(category) {
-                    const categoryItem = createCategoryItem(category);
-                    brandsList.append(categoryItem);
-                });
             }
         },
         error: function(xhr, status, error) {
             console.error('Load brands error:', error);
+        }
+    });
+}
+
+function loadAllDrinks() {
+    console.log('Loading all drink options...');
+    $.ajax({
+        url: '../logic_php/read.php',
+        type: 'POST',
+        data: { action: 'get_drinks' },
+        dataType: 'json',
+        success: function(response) {
+            console.log('Drinks response:', response);
+            if (response.success) {
+                window.allDrinks = response.drinks;
+                console.log("Successfully loaded all drinks.")
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Load drinks error:', error);
+        }
+    });
+}
+
+function loadAllToppings() {
+    console.log('Loading all topping options...');
+    $.ajax({
+        url: '../logic_php/read.php',
+        type: 'POST',
+        data: { action: 'get_toppings' },
+        dataType: 'json',
+        success: function(response) {
+            console.log('Toppings response:', response);
+            if (response.success) {
+                window.allToppings = response.toppings;
+                console.log("Successfully loaded all toppings.")
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Load drinks error:', error);
         }
     });
 }
