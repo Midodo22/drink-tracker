@@ -63,5 +63,5 @@ ALTER TABLE `toppings`
   ADD PRIMARY KEY (`brand_id`,`name`);
 
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`username`);
 COMMIT;
