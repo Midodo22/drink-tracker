@@ -38,25 +38,25 @@
         <div class="card record-input-card" aria-label="Add new record" style="margin-top: min(50px, 12vh);">
             <h1 style="text-align: center; margin-bottom: 1rem; font-weight: 700;">Add New Record</h1>
             
-            <form id="record-form" method="post">
+            <form id="record-form" method="post" action="../logic_php/record_add.php">
                 <div style="margin-bottom: 1rem;">
                     <label for="create-brand" style="font-weight: 600;"><i class="bi bi-shop"></i> Brand</label>
                     <br>
-                    <select id="create-brand" class="text-box" style="max-width: 250px; display: inline-block;">
+                    <select id="create-brand" name="create-brand" class="text-box" style="max-width: 250px; display: inline-block;">
                     </select>
                 </div>
 
                 <div style="margin-bottom: 1rem;">
                     <label for="create-drink" style="font-weight: 600;"><i class="bi bi-cup-straw"></i> Drink name</label>
                     <br>
-                    <select id="create-drink" class="text-box" style="max-width: 250px; display: inline-block;">
+                    <select id="create-drink" name="create-drink" class="text-box" style="max-width: 250px; display: inline-block;">
                     </select>
                 </div>
 
                 <div style="margin-bottom: 1rem;">
                     <label for="create-topping" style="font-weight: 600;"><i class="fa fa-plus-circle"></i> Toppings</label>
                     <br>
-                    <select id="create-topping" class="text-box" style="max-width: 250px; display: inline-block;">
+                    <select id="create-topping" name="create-topping" class="text-box" style="max-width: 250px; display: inline-block;">
                     </select>
                 </div>
 
@@ -64,7 +64,7 @@
                     <div style="flex: 1;">
                         <label for="create-temp" style="font-weight: 600;"><i class="fa fa-thermometer-half"></i> Temperature</label>
                         <div style="display: flex; gap: 0.5rem;">
-                            <select id="create-temp" class="text-box" style="max-width: 250px; display: inline-block;">
+                            <select id="create-temp" name="create-temp" class="text-box" style="max-width: 250px; display: inline-block;">
                                 <option value="normal">正常</option>
                                 <option value="half">少冰</option>
                                 <option value="less">微冰</option>
@@ -78,7 +78,7 @@
 
                     <div style="flex: 1;">
                         <label for="create-sugar" style="font-weight: 600;"><i class="fa fa-cube"></i> Sugar</label>
-                        <select id="create-sugar" class="text-box" style="max-width: 250px; display: inline-block;">
+                        <select id="create-sugar" name="create-sugar" class="text-box" style="max-width: 250px; display: inline-block;">
                         <option value=10>10</option>
                         <option value=9>9</option>
                         <option value=8>8</option>
