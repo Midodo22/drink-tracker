@@ -48,6 +48,34 @@
             $stmt->close();
             break;
         
+        case 'get_drinks':
+            $stmt = $conn->prepare("SELECT * FROM drinks");
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            $drinks = [];
+            while ($row = $result->fetch_assoc()) {
+                $drinks[] = $row;
+            }
+            
+            echo json_encode(['success' => true, 'drinks' => $drinks]);
+            $stmt->close();
+            break;
+
+        case 'get_toppings':
+            $stmt = $conn->prepare("SELECT * FROM toppings");
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            $toppings = [];
+            while ($row = $result->fetch_assoc()) {
+                $toppings[] = $row;
+            }
+            
+            echo json_encode(['success' => true, 'toppings' => $toppings]);
+            $stmt->close();
+            break;
+        
         default:
             echo json_encode(['success' => false, 'message' => 'Invalid action or error when processing request']);
     }

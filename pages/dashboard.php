@@ -128,31 +128,39 @@
         <!-- Edit Popup -->
         <div id="edit-modal-overlay" class="modal-overlay hidden">
             <div id="edit-modal" class="modal-card">
-                <h2>Edit Task</h2>
+                <h2>Edit Record</h2>
 
                 <form id="edit-form">
-                    <label>Brand:</label>
-                    <select id="edit-brand" class="text-box" style="max-width: 250px; display: inline-block;">
-                    </select>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-weight: 600;"><i class="fa fa-pencil"></i>Brand:</label>
+                        <select id="edit-brand" class="text-box" style="max-width: 250px; display: inline-block;">
+                        </select>
+                    </div>
 
-                    <label>Drink name:</label>
-                    <select id="edit-drink" class="text-box" style="max-width: 250px; display: inline-block;">
-                    </select>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-weight: 600;"><i class="fa fa-align-left"></i> Drink name:</label>
+                        <select id="edit-drink" class="text-box" style="max-width: 250px; display: inline-block;">
+                        </select>
+                    </div>
 
-                    <label>Toppings:</label>
-                    <select id="edit-topping" class="text-box" style="max-width: 250px; display: inline-block;">
-                    </select>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-weight: 600;"><i class="fa fa-align-left"></i>Toppings:</label>
+                        <select id="edit-topping" class="text-box" style="max-width: 250px; display: inline-block;">
+                        </select>
+                    </div>
 
-                    <label>Temp:</label>
-                    <select id="edit-temp" class="text-box" style="max-width: 250px; display: inline-block;">
-                        <option value="normal">正常</option>
-                        <option value="half">少冰</option>
-                        <option value="less">微冰</option>
-                        <option value="little">去冰</option>
-                        <option value="none">完全去冰</option>
-                        <option value="warm">溫</option>
-                        <option value="hot">熱</option>
-                    </select>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-weight: 600;"><i class="fa fa-align-left"></i>Temp:</label>
+                        <select id="edit-temp" class="text-box" style="max-width: 250px; display: inline-block;">
+                            <option value="normal">正常</option>
+                            <option value="half">少冰</option>
+                            <option value="less">微冰</option>
+                            <option value="little">去冰</option>
+                            <option value="none">完全去冰</option>
+                            <option value="warm">溫</option>
+                            <option value="hot">熱</option>
+                        </select>
+                    </div>
                     
                     <label>Sugar:</label>
                     <select id="edit-sugar" class="text-box" style="max-width: 250px; display: inline-block;">

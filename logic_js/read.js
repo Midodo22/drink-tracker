@@ -2,8 +2,9 @@ $(document).ready(function() {
     console.log('Page loaded, initializing...');
     
     loadBrands();
-    
     loadRecords();
+    loadAllDrinks();
+    loadAllToppings();
 
     // filter
     // document.getElementById("filter-type").addEventListener("change", function () {
@@ -173,26 +174,56 @@ function loadBrands() {
                 response.brands.forEach(function(brand) {
                     select.append(`<option value="${brand.id}">${escapeHtml(brand.name)}</option>`);
                 });
-                
+
                 window.brands = response.brands;
                 
                 if (currentValue) {
                     select.val(currentValue);
                 }
-
-                // Update brands management section
-                // const brandsList = $('#brands-list');
-                // brandsList.empty();
-                
-                // response.brands.forEach(function(brands) {
-                //     const brandItem = createBrandItem(brands);
-                //     brandsList.append(brandItem);
-                // });
-                // Not in use
             }
         },
         error: function(xhr, status, error) {
             console.error('Load brands error:', error);
+        }
+    });
+}
+
+function loadAllDrinks() {
+    console.log('Loading all drink options...');
+    $.ajax({
+        url: '../logic_php/read.php',
+        type: 'POST',
+        data: { action: 'get_drinks' },
+        dataType: 'json',
+        success: function(response) {
+            console.log('Drinks response:', response);
+            if (response.success) {
+                window.allDrinks = response.drinks;
+                console.log("Successfully loaded all drinks.")
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Load drinks error:', error);
+        }
+    });
+}
+
+function loadAllToppings() {
+    console.log('Loading all topping options...');
+    $.ajax({
+        url: '../logic_php/read.php',
+        type: 'POST',
+        data: { action: 'get_toppings' },
+        dataType: 'json',
+        success: function(response) {
+            console.log('Toppings response:', response);
+            if (response.success) {
+                window.allToppings = response.toppings;
+                console.log("Successfully loaded all toppings.")
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Load drinks error:', error);
         }
     });
 }
