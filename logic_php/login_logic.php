@@ -1,12 +1,14 @@
 <?php
     include 'db_connect.php';
+    include 'hash.php';
 
     $message = "";
     $toastClass = "";
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = $_POST['username'];
-        $password = $_POST['password'];
+        $plaintextPassword = $_POST['password'];  
+        $password = hash($plaintextPassword); 
 
         // Prepare and execute
         $stmt = $conn->prepare("SELECT password FROM userdata WHERE username = ?");
