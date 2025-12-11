@@ -28,7 +28,40 @@ $(document).ready(function() {
 
 });
 
-// Function to load all todos
+
+function createRecordCard(task) {
+    const deadlineText = task.deadline
+        ? new Date(task.deadline).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric"
+          })
+        : "No deadline";
+
+    return `
+        <div class="record-item-card ${task.completed == 1 ? "completed" : ""}"
+            data-task-name="${escapeHtml(task.name)}">
+
+            <div class="record-left">
+                <div class="record-top-row">
+                    <h3 class="record-name">${escapeHtml(task.name)}</h3>
+                    <span class="record-category">${escapeHtml(task.category || "none")}</span>
+                </div>
+
+                <p class="record-description">${escapeHtml(task.description || "No description")}</p>
+                <span class="record-deadline"><i class="fa fa-calendar"></i> ${deadlineText}</span>
+            </div>
+
+            <div class="record-right">
+                <button class="record-btn edit-btn"><i class="fa fa-edit"></i></button>
+                <button class="record-btn complete-btn"><i class="fa fa-check"></i></button>
+                <button class="record-btn delete-btn"><i class="fa fa-trash"></i></button>
+            </div>
+        </div>
+    `;
+}
+
+// Function to load all records
 function loadRecords() {
     console.log('Loading records...');
     $.ajax({
@@ -60,12 +93,12 @@ function loadRecords() {
         error: function(xhr, status, error) {
             console.error('Load records error:', error);
             console.error('Response:', xhr.responseText);
-            $('#todos-container').html('<p style="text-align: center; color: #f44336; grid-column: 1/-1; font-weight: 600;">Error loading records. Please refresh the page.</p>');
+            $('#records-container').html('<p style="text-align: center; color: #f44336; grid-column: 1/-1; font-weight: 600;">Error loading records. Please refresh the page.</p>');
         }
     });
 }
 
-// Function to filter and display todos based on selected brand
+// Function to filter and display records based on selected brand
 function filterRecords() {
     if (type == "brand"){
         const selectedBrand = $('#brand-filter').val();
@@ -76,17 +109,21 @@ function filterRecords() {
             container.html('<p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">No records yet. Add your first record above!</p>');
             return;
         }
-        
-        const filteredRecords = selectedBrand === 'all' 
-            ? window.allRecords 
-            : window.allRecords.filter(records => records.brand === selectedBrand);
+
+        let filteredRecords;
+        if (selectedBrand === 'all') {
+            filteredRecords = window.allRecords;
+        } else {
+            const selectedBrandId = parseInt(selectedBrand, 10);
+            filteredRecords = window.allRecords.filter(record => record.brand_id === selectedBrandId);
+        }
         
         if (filteredRecords.length === 0) {
             container.html('<p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">No records under this brand.</p>');
         } else {
             filteredRecords.forEach(function(record) {
-                const todoCard = createTodoCard(tarecordsk);
-                container.append(todoCard);
+                const recordCard = createRecordCard(record);
+                container.append(recordCard);
             });
         }
     }
@@ -123,8 +160,8 @@ function loadBrands() {
                 filter.empty();
                 filter.append('<option value="all">All Brands</option>');
                 
-                response.brands.forEach(function(brands) {
-                    filter.append(`<option value="${escapeHtml(brands)}">${escapeHtml(brands)}</option>`);
+                response.brands.forEach(function(brand) {
+                    filter.append(`<option value="${brand.id}">${escapeHtml(brand.name)}</option>`);
                 });
                 
                 if (currentFilterValue) {
@@ -132,13 +169,14 @@ function loadBrands() {
                 }
 
                 // Update brands management section
-                const brandsList = $('#brands-list');
-                brandsList.empty();
+                // const brandsList = $('#brands-list');
+                // brandsList.empty();
                 
-                response.brands.forEach(function(brands) {
-                    const brandItem = createBrandItem(brands);
-                    brandsList.append(brandItem);
-                });
+                // response.brands.forEach(function(brands) {
+                //     const brandItem = createBrandItem(brands);
+                //     brandsList.append(brandItem);
+                // });
+                // Not in use
             }
         },
         error: function(xhr, status, error) {

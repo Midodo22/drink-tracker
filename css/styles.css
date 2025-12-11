@@ -171,14 +171,14 @@ p {
 }
 
 /* Container holds cards vertically */
-#todos-container {
+#records-container {
   display: flex;
   flex-direction: column;
   gap: 1rem; /* ensures spacing between cards */
 }
 
 /* Horizontal list-style row */
-.todo-item-card {
+.record-item-card {
   display: flex !important;
   flex-direction: row;
   justify-content: space-between;
@@ -194,22 +194,22 @@ p {
 }
 
 /* Completed styling */
-.todo-item-card.completed {
+.record-item-card.completed {
   opacity: 0.6;
 }
-.todo-item-card.completed .todo-name,
-.todo-item-card.completed .todo-description {
+.record-item-card.completed .record-name,
+.record-item-card.completed .record-description {
   text-decoration: line-through;
 }
 
-.todo-top-row {
+.record-top-row {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 /* LEFT SIDE */
-.todo-left {
+.record-left {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -217,20 +217,20 @@ p {
 }
 
 
-.todo-title-row {
+.record-title-row {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.todo-name {
+.record-name {
   margin: 0;
   font-weight: 700;
   font-size: 1.15em;
   color: var(--main_text);
 }
 
-.todo-category {
+.record-category {
   display: inline-block;
   background-color: var(--theme_green);
   color: white;
@@ -239,20 +239,20 @@ p {
   font-size: 0.85em;
 }
 
-.todo-description {
+.record-description {
   margin: 0;
   font-size: 0.95em;
   color: var(--main_text);
 }
 
-.todo-deadline {
+.record-deadline {
   margin-top: 0.25rem;
   font-size: 0.85em;
   color: #444;
 }
 
 /* RIGHT SIDE BUTTONS */
-.todo-right {
+.record-right {
   display: flex;
   flex-direction: row;
   gap: 0.6rem;
@@ -261,7 +261,7 @@ p {
 }
 
 
-.todo-btn {
+.record-btn {
   background: transparent;
   border: 1px solid var(--theme_green);
   color: var(--theme_green);
@@ -271,7 +271,7 @@ p {
   transition: all 0.2s;
 }
 
-.todo-btn:hover {
+.record-btn:hover {
   background-color: var(--theme_green);
   color: white;
 }

@@ -37,7 +37,10 @@
             
             $brands = [];
             while ($row = $result->fetch_assoc()) {
-                $brands[] = $row['name'];
+                $brands[] = [
+                    'id' => $row['id'],
+                    'name' => $row['brand_name']
+                ];
             }
             
             echo json_encode(['success' => true, 'brands' => $brands]);
