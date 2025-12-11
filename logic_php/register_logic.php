@@ -9,7 +9,7 @@
         $password = $_POST['password'];
 
         // Hash
-        include 'adler32_str.php';
+        include 'hash.php';
         $password_hashed = hash($password, 114514);
 
         // Check if username already exists
