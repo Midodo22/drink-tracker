@@ -96,4 +96,7 @@ $stmt->bind_param("n ", $user_id, $record_id, $brand_id, $drink_name, $toppings,
 
 $stmt->execute();
 
+
+header("Location: ../pages/dashboard.php");
+
 ?>
