@@ -11,3 +11,6 @@ NYCU 2025 動態網頁程式設計 Final Project－手搖飲紀錄系統
     Go to load_data.py and change the host, username, and password settings to your own. Please not that there are 3 functions and all 3 have to be modified.
 3. Execution
     Execute `pip install mysql-connector-python` if mysql-connector isn't installed,  and run load_data.py. If execution fails, please delete the database and try again after resolving the issue.
+
+## Connect to SQL
+Please go to logic_php/db_connect.php and change the host, username, and password settings to your own.

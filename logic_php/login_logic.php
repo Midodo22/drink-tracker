@@ -1,14 +1,12 @@
 <?php
     include 'db_connect.php';
-    include 'hash.php';
 
     $message = "";
     $toastClass = "";
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = $_POST['username'];
-        $plaintextPassword = $_POST['password'];  
-        $password = hash($plaintextPassword); 
+        $password = $_POST['password'];
 
         // Hash
         include 'hash.php';
