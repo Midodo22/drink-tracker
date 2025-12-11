@@ -82,8 +82,6 @@ function loadBrands() {
         success: function(response) {
             console.log('Brands response:', response);
             if (response.success) {
-
-                window.brands = response.brands;
                 // Update dropdown
                 const select = $('#brand-filter');
                 const currentValue = select.val();
@@ -105,6 +103,8 @@ function loadBrands() {
                 response.brands.forEach(function(brand) {
                     filter.append(`<option value="${brand.id}">${escapeHtml(brand.name)}</option>`);
                 });
+
+                window.brands = response.brands;
                 
                 if (currentFilterValue) {
                     filter.val(currentFilterValue);
@@ -137,8 +137,6 @@ function loadRecords() {
         success: function(response) {
             console.log('Records response:', response);
             if (response.success) {
-                window.allRecords = response.records;
-
                 const container = $('#records-container');
                 container.empty();
                 
