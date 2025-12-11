@@ -79,17 +79,17 @@
                     <div style="flex: 1;">
                         <label for="create-sugar" style="font-weight: 600;"><i class="fa fa-cube"></i> Sugar</label>
                         <select id="create-sugar" class="text-box" style="max-width: 250px; display: inline-block;">
-                        <option value="10">10</option>
-                        <option value="9">9</option>
-                        <option value="8">8</option>
-                        <option value="7">7</option>
-                        <option value="6">6</option>
-                        <option value="5">5</option>
-                        <option value="4">4</option>
-                        <option value="3">3</option>
-                        <option value="2">2</option>
-                        <option value="1">1</option>
-                        <option value="0">0</option>
+                        <option value=10>10</option>
+                        <option value=9>9</option>
+                        <option value=8>8</option>
+                        <option value=7>7</option>
+                        <option value=6>6</option>
+                        <option value=5>5</option>
+                        <option value=4>4</option>
+                        <option value=3>3</option>
+                        <option value=2>2</option>
+                        <option value=1>1</option>
+                        <option value=0>0</option>
                     </select>
                     </div>
                 </div>
@@ -166,13 +166,17 @@
                     <div style="margin-bottom: 1rem;">
                         <label style="font-weight: 600;"><i class="fa fa-cube"></i> Sugar:</label>
                         <select id="edit-sugar" class="text-box" style="max-width: 250px; display: inline-block;">
-                            <option value="normal">正常</option>
-                            <option value="seven">七分糖</option>
-                            <option value="less">少糖</option>
-                            <option value="half">半糖</option>
-                            <option value="little">微糖</option>
-                            <option value="one">一分糖</option>
-                            <option value="none">無糖</option>
+                            <option value=10>10</option>
+                            <option value=9>9</option>
+                            <option value=8>8</option>
+                            <option value=7>7</option>
+                            <option value=6>6</option>
+                            <option value=5>5</option>
+                            <option value=4>4</option>
+                            <option value=3>3</option>
+                            <option value=2>2</option>
+                            <option value=1>1</option>
+                            <option value=0>0</option>
                         </select>
                     </div>
 
