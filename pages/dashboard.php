@@ -122,21 +122,43 @@
                 <h2>Edit Task</h2>
 
                 <form id="edit-form">
-                    <label>Name:</label>
-                    <input type="text" id="edit-name" class="edit-text-box" required>
+                    <label>Brand:</label>
+                    <select id="edit-brand" class="text-box" style="max-width: 250px; display: inline-block;">
+                    </select>
 
-                    <label>Category:</label>
-                    <input type="text" id="edit-category" class="edit-text-box">
+                    <label>Drink name:</label>
+                    <select id="edit-drink" class="text-box" style="max-width: 250px; display: inline-block;">
+                    </select>
 
-                    <label>Description:</label>
-                    <textarea id="edit-description" class="edit-text-box" rows="3"></textarea>
+                    <label>Toppings:</label>
+                    <select id="edit-topping" class="text-box" style="max-width: 250px; display: inline-block;">
+                    </select>
 
-                    <label>Deadline:</label>
-                    <input type="date" id="edit-deadline" class="edit-text-box">
+                    <label>Temp:</label>
+                    <select id="edit-temp" class="text-box" style="max-width: 250px; display: inline-block;">
+                        <option value="normal">正常</option>
+                        <option value="half">少冰</option>
+                        <option value="less">微冰</option>
+                        <option value="little">去冰</option>
+                        <option value="none">完全去冰</option>
+                        <option value="warm">溫</option>
+                        <option value="hot">熱</option>
+                    </select>
+                    
+                    <label>Sugar:</label>
+                    <select id="edit-sugar" class="text-box" style="max-width: 250px; display: inline-block;">
+                        <option value="normal">正常</option>
+                        <option value="seven">七分糖</option>
+                        <option value="less">少糖</option>
+                        <option value="half">半糖</option>
+                        <option value="little">微糖</option>
+                        <option value="one">一分糖</option>
+                        <option value="none">無糖</option>
+                    </select>
 
                     <div class="modal-buttons">
-                        <button type="button" id="edit-cancel-btn" class="todo-btn">Cancel</button>
-                        <button type="submit" class="todo-btn save-btn">Save</button>
+                        <button type="button" id="edit-cancel-btn" class="record-btn">Cancel</button>
+                        <button type="submit" class="record-btn save-btn">Save</button>
                     </div>
                 </form>
             </div>

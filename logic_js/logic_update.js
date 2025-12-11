@@ -24,6 +24,7 @@ $(document).ready(function() {
         updateDrinkOptions(recordBeingEdited.brand_id, recordBeingEdited.drink_name);
         updateToppingOptions(recordBeingEdited.brand_id, recordBeingEdited.topping);
         $("#edit-sugar").val(recordBeingEdited.sugar);
+        $("#edit-temp").val(recordBeingEdited.temperature);
 
         // Show popup
         $("#edit-modal-overlay").removeClass("hidden");
@@ -49,6 +50,7 @@ $(document).ready(function() {
         const newDrinkName = $("#edit-drink").val();  // drink_name
         const newTopping = $("#edit-topping").val();
         const newSugar = $("#edit-sugar").val();
+        const newTemp = $("#edit-temp").val();
 
         updateRecord(
             recordBeingEdited.brand_id,
@@ -57,14 +59,16 @@ $(document).ready(function() {
             newDrinkName,
             newTopping,
             newSugar,
+            newTemp,
             function(success){
                 if(success){
                     recordBeingEdited.brand_id = newBrandId;
                     recordBeingEdited.drink_name = newDrinkName;
                     recordBeingEdited.topping = newTopping;
                     recordBeingEdited.sugar = newSugar;
+                    recordBeingEdited.temp = newTemp;
 
-                    loadRecords();  // TODO: Re-render UI
+                    loadRecords();
                     $("#edit-modal-overlay").addClass("hidden");
                 }
             }
@@ -167,26 +171,26 @@ function updateDrinkOptions(brand_id, selectedDrink=null){
     const drinks = window.allDrinks.filter(d => d.brand_id == brand_id);
     $("#edit-drink").empty();
     drinks.forEach(d => {
-        const selected = d.drink_name === selectedDrink ? "selected" : "";
-        $("#edit-drink").append(`<option value="${d.drink_name}" ${selected}>${d.drink_name} ($${d.price}, ${d.calories} cal)</option>`);
+        const selected = d.name === selectedDrink ? "selected" : "";
+        $("#edit-drink").append(`<option value="${d.name}" ${selected}>${d.name} ($${d.price}, ${d.calories} cal)</option>`);
     });
 }
 
-function updateToppingOptions(brand_id, selectedTopping = null) {
+function updateToppingOptions(brand_id, selectedTopping = null){
     const toppings = window.allToppings.filter(t => t.brand_id == brand_id);
     const select = $("#edit-topping");
     select.empty();
 
     toppings.forEach(t => {
-        const selected = t.topping_name === selectedTopping ? "selected" : "";
-        select.append(`<option value="${t.topping_name}" ${selected}>
-            ${t.topping_name} ($${t.price}, ${t.calories} cal)
+        const selected = t.name === selectedTopping ? "selected" : "";
+        select.append(`<option value="${t.name}" ${selected}>
+            ${t.name} ($${t.price}, ${t.calories} cal)
         </option>`);
         });
-    }
+}
 
 
-function updateRecord(oldBrandId, oldDrinkName, newBrandId, newDrinkName, newTopping, newSugar, callback){
+function updateRecord(oldBrandId, oldDrinkName, newBrandId, newDrinkName, newTopping, newSugar, newTemp, callback){
     $.ajax({
         url: "../logic_php/update.php",
         type: "POST",
@@ -197,7 +201,8 @@ function updateRecord(oldBrandId, oldDrinkName, newBrandId, newDrinkName, newTop
             brand_id: newBrandId,
             drink_name: newDrinkName,
             topping: newTopping,
-            sugar: newSugar
+            sugar: newSugar,
+            temp: newTemp
         },
         dataType: "json",
         success: function(response) {
