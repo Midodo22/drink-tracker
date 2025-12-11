@@ -2,10 +2,13 @@
 
 use Dom\CharacterData;
 
-function charCodeAt(string $str, int $index) : int{
-	return mb_ord(mb_substr($str, $index, 1, 'UTF-16'), 'UTF-16');
+function charCodeAt(string $str, int $index) : int {
+    $ch = mb_substr($str, $index, 1, 'UTF-16');
+    if ($ch === "") return 0;  // prevent mb_ord crash
+    return mb_ord($ch, 'UTF-16');
 }
-function hash(string $plaintext, int $seed = NULL) : string {
+
+function adler_hash(string $plaintext, int $seed = NULL) : string {
 		$cipher = "";
 		
 		$a = 1;
@@ -38,7 +41,7 @@ function hash(string $plaintext, int $seed = NULL) : string {
 				}
 				else if($c >= 0xD800 && $c < 0xE000){
 					$c = ($c & 1023) + 64;
-					$d = charCodeAt($c, $i++) & 1023;
+					$d = charCodeAt($plaintext, $i++) & 1023;
 
 					$a += 240 | (($c >> 8) & 7);
 					$b += $a;

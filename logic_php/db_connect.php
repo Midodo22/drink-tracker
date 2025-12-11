@@ -1,8 +1,8 @@
 <?php
     $servername = "localhost";
-    $username = "cvml";
-    $password = "dwpcvml2025";
-    $dbname = "hw4_userbase";
+    $username = "root"; // TODO: change username to your own
+    $password = ""; // TODO: change password to your own
+    $dbname = "drink_tracker";
 
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
