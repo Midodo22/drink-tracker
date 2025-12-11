@@ -5,9 +5,9 @@ import numpy as np
 
 def create_db(db_name="drink_tracker"):
     DataBase = SQLC.connect(
-        host="localhost", # TODO: Replace with your MySQL username
-        user="root", # TODO: Replace with your MySQL password
-        password=""
+        host="localhost",
+        user="root", # TODO: Replace with your MySQL username
+        password="" # TODO: Replace with your MySQL password
     )
 
     # Create a cursor object
@@ -24,8 +24,8 @@ def run_sql_file(sql_file_path):
     # Connect to MySQL
     connection = SQLC.connect(
         host="localhost",
-        user="root",
-        password="",
+        user="root", # TODO: Replace with your MySQL username
+        password="", # TODO: Replace with your MySQL password
         database="drink_tracker"
     )
     cursor = connection.cursor()
