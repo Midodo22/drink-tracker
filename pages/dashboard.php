@@ -33,116 +33,146 @@
             </section>
         </div>
 
-        <!-- Add New Todo Card -->
-        <div class="card todo-input-card" aria-label="Add new todo" style="margin-top: min(50px, 12vh);">
+        <!-- Add New Record Card -->
+        <div class="card record-input-card" aria-label="Add new record" style="margin-top: min(50px, 12vh);">
             <h1 style="text-align: center; margin-bottom: 1rem; font-weight: 700;">Add New Task</h1>
             
-            <form id="todo-form" method="post">
+            <form id="record-form" method="post">
                 <div style="margin-bottom: 1rem;">
-                    <label for="todo-name" style="font-weight: 600;"><i class="fa fa-pencil"></i> Name <span style="color: #999; font-size: 0.9em;">(max 50 characters)</span></label>
-                    <input type="text" name="todo-name" id="todo-name" class="text-box" maxlength="50" required>
-                    <small id="name-counter" style="color: #666; font-size: 0.85em; font-weight: 500;">0/50</small>
+                    <label for="record-brand" style="font-weight: 600;"><i class="fa fa-pencil"></i> Brand</label>
+                    <br>
+                    <select id="create-brand" class="text-box" style="max-width: 250px; display: inline-block;">
+                    </select>
                 </div>
 
                 <div style="margin-bottom: 1rem;">
-                    <label for="todo-description" style="font-weight: 600;"><i class="fa fa-align-left"></i> Description <span style="color: #999; font-size: 0.9em;">(max 200 characters)</span></label>
-                    <textarea name="todo-description" id="todo-description" class="text-box" maxlength="200" rows="4" style="resize: none; min-height: 100px;"></textarea>
-                    <small id="desc-counter" style="color: #666; font-size: 0.85em; font-weight: 500;">0/200</small>
+                    <label for="record-drink" style="font-weight: 600;"><i class="fa fa-align-left"></i> Drink name</label>
+                    <br>
+                    <select id="create-drink" class="text-box" style="max-width: 250px; display: inline-block;">
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label for="record-topping" style="font-weight: 600;"><i class="fa fa-align-left"></i> Toppings</label>
+                    <br>
+                    <select id="create-topping" class="text-box" style="max-width: 250px; display: inline-block;">
+                    </select>
                 </div>
 
                 <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                     <div style="flex: 1;">
-                        <label for="todo-category" style="font-weight: 600;"><i class="fa fa-tag"></i> Category</label>
+                        <label for="record-temperature" style="font-weight: 600;"><i class="fa fa-tag"></i> Temperature</label>
                         <div style="display: flex; gap: 0.5rem;">
-                            <select name="todo-category" id="todo-category" class="text-box" style="flex: 1;">
-                                <option value="none">None</option>
-                                <option value="custom">+ Add New Category</option>
+                            <select id="create-temp" class="text-box" style="max-width: 250px; display: inline-block;">
+                                <option value="normal">正常</option>
+                                <option value="half">少冰</option>
+                                <option value="less">微冰</option>
+                                <option value="little">去冰</option>
+                                <option value="none">完全去冰</option>
+                                <option value="warm">溫</option>
+                                <option value="hot">熱</option>
                             </select>
                         </div>
-                        <input type="text" id="custom-category" class="text-box" placeholder="Enter new category" style="display: none; margin-top: 0.5rem;" maxlength="30">
                     </div>
 
                     <div style="flex: 1;">
-                        <label for="todo-deadline" style="font-weight: 600;"><i class="fa fa-calendar"></i> Deadline</label>
-                        <input type="date" name="todo-deadline" id="todo-deadline" class="text-box">
+                        <label for="record-sugar" style="font-weight: 600;"><i class="fa fa-calendar"></i> Sugar</label>
+                        <select id="create-sugar" class="text-box" style="max-width: 250px; display: inline-block;">
+                        <option value="normal">正常</option>
+                        <option value="seven">七分糖</option>
+                        <option value="less">少糖</option>
+                        <option value="half">半糖</option>
+                        <option value="little">微糖</option>
+                        <option value="one">一分糖</option>
+                        <option value="none">無糖</option>
+                    </select>
                     </div>
                 </div>
 
                 <button type="submit" class="cta" style="background-color: var(--theme_green); color: white; font-weight: 600; cursor: pointer; margin-top: 1rem;">
-                    <i class="fa fa-plus"></i> Add Task
+                    <i class="fa fa-plus"></i> Add Record
                 </button>
             </form>
         </div>
 
         <!-- Category Management Section -->
-        <div class="card" style="margin-top: 2rem; max-width: 800px;">
-            <h2 style="text-align: center; margin-bottom: 1rem; font-weight: 700;">Manage Categories</h2>
+        <!-- <div class="card" style="margin-top: 2rem; max-width: 800px;">
+            <h2 style="text-align: center; margin-bottom: 1rem; font-weight: 700;"></h2>
             <div id="categories-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
                 <p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">Loading categories...</p>
             </div>
-        </div>
+        </div> -->
 
-        <!-- Existing Todos Section -->
+        <!-- Records -->
         <div style="width: 100%; max-width: 1200px; margin-top: 2rem;">
             <h2 style="text-align: center; color: var(--main_text); margin-bottom: 1rem; font-weight: 700;">My Tasks</h2>
             
-            <!-- Filter Section -->
+            <!-- Filter -->
             <div style="text-align: center; margin-bottom: 1.5rem;">
-                <label for="filter-type" style="margin-right: 0.5rem; font-weight: 600;">Filter by 
-                    <select id="filter-type" class="text-box" style="max-width: 250px; display: inline-block;">
-                        <option value="category">Category</option>
-                        <option value="status">Status</option>
-                    </select>
-                    :
+                <label for="filter-type" style="margin-right: 0.5rem; font-weight: 600;">Filter by brand:
                 </label>
 
-                <select id="category-filter" class="text-box" style="max-width: 250px; display: inline-block;">
-                    <option value="all">All Categories</option>
-                    <option value="homework">Homework</option>
-                    <option value="project">Project</option>
-                    <option value="exam">Exam</option>
-                </select>
-                <select id="complete-filter" class="text-box" style="max-width: 250px; display: inline-block;">
-                    <option value="all">All</option>
-                    <option value="complete">Complete</option>
-                    <option value="incomplete">Incomplete</option>
+                <select id="brand-filter" class="text-box" style="max-width: 250px; display: inline-block;">
                 </select>
             </div>
 
-            
-            <div id="todos-container">
+            <div id="records-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
                 <p style="text-align: center; color: #999; grid-column: 1/-1; font-weight: 500;">Loading tasks...</p>
             </div>
-
         </div>
 
-        <!-- EDIT MODAL OVERLAY -->
+        <!-- Edit Popup -->
         <div id="edit-modal-overlay" class="modal-overlay hidden">
             <div id="edit-modal" class="modal-card">
                 <h2>Edit Task</h2>
 
                 <form id="edit-form">
-                    <label>Name:</label>
-                    <input type="text" id="edit-name" class="edit-text-box" required>
+                    <label>Brand:</label>
+                    <select id="edit-brand" class="text-box" style="max-width: 250px; display: inline-block;">
+                    </select>
 
-                    <label>Category:</label>
-                    <input type="text" id="edit-category" class="edit-text-box">
+                    <label>Drink name:</label>
+                    <select id="edit-drink" class="text-box" style="max-width: 250px; display: inline-block;">
+                    </select>
 
-                    <label>Description:</label>
-                    <textarea id="edit-description" class="edit-text-box" rows="3"></textarea>
+                    <label>Toppings:</label>
+                    <select id="edit-topping" class="text-box" style="max-width: 250px; display: inline-block;">
+                    </select>
 
-                    <label>Deadline:</label>
-                    <input type="date" id="edit-deadline" class="edit-text-box">
+                    <label>Temp:</label>
+                    <select id="edit-temp" class="text-box" style="max-width: 250px; display: inline-block;">
+                        <option value="normal">正常</option>
+                        <option value="half">少冰</option>
+                        <option value="less">微冰</option>
+                        <option value="little">去冰</option>
+                        <option value="none">完全去冰</option>
+                        <option value="warm">溫</option>
+                        <option value="hot">熱</option>
+                    </select>
+                    
+                    <label>Sugar:</label>
+                    <select id="edit-sugar" class="text-box" style="max-width: 250px; display: inline-block;">
+                        <option value="normal">正常</option>
+                        <option value="seven">七分糖</option>
+                        <option value="less">少糖</option>
+                        <option value="half">半糖</option>
+                        <option value="little">微糖</option>
+                        <option value="one">一分糖</option>
+                        <option value="none">無糖</option>
+                    </select>
 
                     <div class="modal-buttons">
-                        <button type="button" id="edit-cancel-btn" class="todo-btn">Cancel</button>
-                        <button type="submit" class="todo-btn save-btn">Save</button>
+                        <button type="button" id="edit-cancel-btn" class="record-btn">Cancel</button>
+                        <button type="submit" class="record-btn save-btn">Save</button>
                     </div>
+                    
                 </form>
             </div>
         </div>
 
-    	<script src="../logic_js/logic.js"></script>
+    	<script src="../logic_js/read.js"></script>
+    	<script src="../logic_js/logic_update.js"></script>
+    	<script src="../logic_js/logic_delete.js"></script>
 
     </body>
 
