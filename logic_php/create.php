@@ -18,7 +18,7 @@
 	$temp = isset($_POST["create-temp"]) ? trim($_POST["create-temp"]) : "";
 	$sugar = isset($_POST["create-sugar"]) ? (int)$_POST["create-sugar"] : 0;
 
-	if ($brand_id === 0 || $drink_name === "" || $temp === "") {
+	if ($drink_name === "") {
 		header("Location: ../pages/dashboard.php");
 		exit();
 	}

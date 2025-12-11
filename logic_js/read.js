@@ -190,7 +190,6 @@ function loadBrands() {
                 
                 createSelect.empty();
                 createSelect.append('<option value="" disabled selected>Select a brand</option>');
-                createSelect.append('<option value="all">All Brands</option>');
                 
                 response.brands.forEach(function(brand) {
                     createSelect.append(`<option value="${brand.id}">${escapeHtml(brand.name)}</option>`);

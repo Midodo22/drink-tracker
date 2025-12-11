@@ -38,7 +38,7 @@
         <div class="card record-input-card" aria-label="Add new record" style="margin-top: min(50px, 12vh);">
             <h1 style="text-align: center; margin-bottom: 1rem; font-weight: 700;">Add New Record</h1>
             
-            <form id="record-form" method="post" action="../logic_php/record_add.php">
+            <form id="record-form" method="post" action="../logic_php/create.php">
                 <div style="margin-bottom: 1rem;">
                     <label for="create-brand" style="font-weight: 600;"><i class="bi bi-shop"></i> Brand</label>
                     <br>
@@ -190,8 +190,8 @@
         </div>
 
     	<script src="../logic_js/read.js"></script>
-    	<script src="../logic_js/logic_update.js"></script>
-    	<script src="../logic_js/logic_delete.js"></script>
+    	<script src="../logic_js/update.js"></script>
+    	<script src="../logic_js/delete.js"></script>
 
     </body>
 
