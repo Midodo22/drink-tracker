@@ -8,6 +8,10 @@
         $username = $_POST['username'];
         $password = $_POST['password'];
 
+        // Hash
+        include 'adler32_str.php';
+        $password_hashed = hash($password, 114514);
+
         // Check if username already exists
         $checkUnStmt = $conn->prepare("SELECT username FROM userdata WHERE username = ?");
         $checkUnStmt->bind_param("s", $username);
@@ -20,7 +24,7 @@
         } else {
             // Prepare and bind
             $stmt = $conn->prepare("INSERT INTO userdata (username, password) VALUES (?, ?)");
-            $stmt->bind_param("ss", $username, $password);
+            $stmt->bind_param("ss", $username, $password_hashed);
 
             if ($stmt->execute()) {
                 $message = "Account created successfully";
