@@ -3,16 +3,14 @@ $(document).ready(function() {
         if (!confirm("Are you sure you want to delete this drink record?")) return;
 
         const card = $(this).closest(".record-item-card");
-        const brand_id = card.data("brand-id");
-        const drink_name = card.data("drink-name");
+        const record_id = card.data("record-id");
 
         $.ajax({
             url: "../logic_php/delete.php",
             type: "POST",
             data: {
                 action: "delete_record",
-                brand_id: brand_id,
-                drink_name: drink_name
+                record_id: record_id
             },
             dataType: "json",
             success: function (response) {

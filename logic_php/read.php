@@ -17,7 +17,6 @@
     switch ($action) {
         case 'get_all':
             $stmt = $conn->prepare("SELECT r.*, brands.name AS brand_name FROM records AS r INNER JOIN brands ON r.brand_id=brands.id WHERE user_id=? ORDER BY r.created_at DESC");
-            // $stmt = $conn->prepare("SELECT * FROM records WHERE username = ? ORDER BY created_at DESC");
             $stmt->bind_param("s", $user_id);
             $stmt->execute();
             $result = $stmt->get_result();

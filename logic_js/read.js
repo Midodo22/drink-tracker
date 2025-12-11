@@ -86,11 +86,11 @@ function createRecordCard(record) {
 
                 <!-- Temperature & Sugar -->
                 <p class="record-topping">
-                    <strong>Temp:</strong> ${escapeHtml(displayTemp)} &nbsp; | &nbsp;
-                    <strong>Sugar:</strong> ${escapeHtml(displaySugar)} &nbsp; | &nbsp;
+                    <strong><i class="fa fa-thermometer-half"></i> Temp:</strong> ${escapeHtml(displayTemp)} &nbsp; | &nbsp;
+                    <strong><i class="fa fa-cube"></i> Sugar:</strong> ${escapeHtml(displaySugar)} &nbsp; | &nbsp;
                     
-                    <strong>Calories:</strong> ${escapeHtml(record.calories || "-")} kcal &nbsp; | &nbsp;
-                    <strong>Price:</strong> $${escapeHtml(record.price || "-")}
+                    <strong><i class="bi bi-fire"></i> Calories:</strong> ${escapeHtml(record.calories || "-")} kcal &nbsp; | &nbsp;
+                    <strong><i class="bi bi-coin"></i> Price:</strong> $${escapeHtml(record.price || "-")}
                 </p>
 
                 <!-- Created Time -->
