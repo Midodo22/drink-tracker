@@ -5,12 +5,11 @@ $stmt = $conn->stmt_init();
 
 $username = $_SESSION['username'];
 
-$brand_name = $_POST[""];
-// $brand_id = $_POST[""];
-$drink_name = $_POST[""];
-$toppings = $_POST[""];
-$temp = $_POST[""];
-$sugar = $_POST[""];
+$brand_name = $_POST["create-brand"];
+$drink_name = $_POST["create-drink"];
+$toppings = $_POST["create-topping"];
+$temp = $_POST["create-temp"];
+$sugar = $_POST["create-sugar"];
 
 $calories = 0;
 $price = 0;
