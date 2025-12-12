@@ -66,6 +66,9 @@ ALTER TABLE `toppings`
 INSERT INTO users (username, password)
 VALUES ("admin", "3611673572");
 
+INSERT INTO users (username, password)
+VALUES ("CVML", "2058471855");
+
 INSERT INTO records (user_id, record_id, brand_id, drink_name, temp, sugar, price)
 VALUES (1, 1, 1, "八曜和茶", "hot", "half", 35);
 
