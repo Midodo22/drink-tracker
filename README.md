@@ -2,7 +2,7 @@
 ## drink tracker
 NYCU 2025 動態網頁程式設計 Final Project－手搖飲紀錄系統
 112550124, 112550151, 112550198
-To see the results, you can directly check out the [presentation slides](Presentation Slides.pdf).
+To see the results, you can directly check out the [presentation slides](https://github.com/Midodo22/drink-tracker/blob/Midodo22-patch-1/Presentation%20Slides.pdf).
 
 # Setup
 ## Create database
